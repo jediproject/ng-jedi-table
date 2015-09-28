@@ -1,6 +1,6 @@
 /*
- angular-table-restful v0.0.1
- https://github.com/mateusmcg/angular-table-restful
+ ng-jedi-table v0.0.1
+ https://github.com/jediproject/ng-jedi-table
 */
 // author:  "Fábio Henrique da Silva Viana <fabioviana.bh@gmail.com>",
 //          "Mateus Cerqueira <mateus_mcg@icloud.com>",
@@ -9,7 +9,7 @@
 //          "Tanato Cartaxo <tanatopc@gmail.com>"
 // version: 0.0.1
 // license:  MIT 
-// homepage: http://github.com/mateusmcg/angular-table-restful
+// homepage: https://github.com/jediproject/ng-jedi-table
 (function() {
     'use strict';
 
@@ -32,17 +32,17 @@
         };
 
     emptyTableDefaultTemplate = '<tr ng-show="isEmpty()"><td colspan="100%"><strong class="text-warning"><i18n>No item found.</i18n></strong></td></tr>';
-    paginationTemplateScroll = "<div ng-show='isInitialized() && !isEmpty() && getNumberOfPages() > 1' style='margin: 0px;margin-top:10px;'><ul class='pagination'><li ng-class='{disabled: getCurrentPage() <= 0}'><a href='' ng-click='firstPage()'>&lsaquo;</a></li><li ng-if='pageSequence.data[0] > 0'><a href='' ng-click='stepPage(-atConfig.numberOfPages)'>1</a></li><li ng-if='pageSequence.data[0] > 0'><a href='' ng-click='stepPage(-(pageSequence.data.indexOf(getCurrentPage()) + atConfig.numberOfPagesToShow))'>&hellip;</a></li><li ng-class='{active: getCurrentPage() == page}' ng-repeat='page in pageSequence.data'><a href='' ng-click='goToPage(page)'>{{page + 1}}</a></li><li ng-if='pageSequence.data[pageSequence.data.length -1] < getNumberOfPages() - 1'><a href='' ng-click='stepPage(atConfig.numberOfPagesToShow - pageSequence.data.indexOf(getCurrentPage()))'>&hellip;</a></li><li ng-if='pageSequence.data[pageSequence.data.length -1] < getNumberOfPages() - 1'><a href='' ng-click='stepPage(getNumberOfPages())'>{{getNumberOfPages()}}</a></li><li ng-class='{disabled: getCurrentPage() >= getNumberOfPages() - 1}'><a href='' ng-click='stepPage(1)'>&rsaquo;</a></li></ul></div>";
-    paginationTemplate = "<tr ng-show='isInitialized() && !isEmpty() && getNumberOfPages() > 1' class='at-pagination'><td colspan='100%'>" + paginationTemplateScroll + "</td></tr>";
+    paginationTemplateScroll = "<div ng-show='isInitialized() && !isEmpty() && getNumberOfPages() > 1' style='margin: 0px;margin-top:10px;'><ul class='pagination'><li ng-class='{disabled: getCurrentPage() <= 0}'><a href='' ng-click='firstPage()'>&lsaquo;</a></li><li ng-if='pageSequence.data[0] > 0'><a href='' ng-click='stepPage(-jdConfig.numberOfPages)'>1</a></li><li ng-if='pageSequence.data[0] > 0'><a href='' ng-click='stepPage(-(pageSequence.data.indexOf(getCurrentPage()) + jdConfig.numberOfPagesToShow))'>&hellip;</a></li><li ng-class='{active: getCurrentPage() == page}' ng-repeat='page in pageSequence.data'><a href='' ng-click='goToPage(page)'>{{page + 1}}</a></li><li ng-if='pageSequence.data[pageSequence.data.length -1] < getNumberOfPages() - 1'><a href='' ng-click='stepPage(jdConfig.numberOfPagesToShow - pageSequence.data.indexOf(getCurrentPage()))'>&hellip;</a></li><li ng-if='pageSequence.data[pageSequence.data.length -1] < getNumberOfPages() - 1'><a href='' ng-click='stepPage(getNumberOfPages())'>{{getNumberOfPages()}}</a></li><li ng-class='{disabled: getCurrentPage() >= getNumberOfPages() - 1}'><a href='' ng-click='stepPage(1)'>&rsaquo;</a></li></ul></div>";
+    paginationTemplate = "<tr ng-show='isInitialized() && !isEmpty() && getNumberOfPages() > 1' class='jd-pagination'><td colspan='100%'>" + paginationTemplateScroll + "</td></tr>";
 
-    angular.module("angular-table", []).constant('atTableConfig', {
+    angular.module("jedi.table", []).constant('jedi.table.TableConfig', {
         i18nDirective: '',
         defaultPageSize: 10,
         emptyTableTemplate: ''
     });
     
     ColumnConfiguration = (function() {
-        function ColumnConfiguration(bodyMarkup, headerMarkup, atTableConfig) {
+        function ColumnConfiguration(bodyMarkup, headerMarkup, TableConfig) {
             this.attribute = bodyMarkup.attribute;
             this.title = bodyMarkup.title;
             this.sortable = bodyMarkup.sortable;
@@ -52,15 +52,15 @@
                 this.customContent = headerMarkup.customContent;
                 this.attributes = headerMarkup.attributes;
             }
-            this.atTableConfig = atTableConfig;
+            this.TableConfig = TableConfig;
         }
 
         ColumnConfiguration.prototype.createElement = function() {
             var th;
             th = angular.element(document.createElement("th"));
 
-            if (this.atTableConfig.i18nDirective) {
-                return th.attr(this.atTableConfig.i18nDirective, '');
+            if (this.TableConfig.i18nDirective) {
+                return th.attr(this.TableConfig.i18nDirective, '');
             }
 
             return th;
@@ -112,10 +112,10 @@
     })();
 
     ScopeConfigWrapper = (function() {
-        function ScopeConfigWrapper(scope, atTable, itemsPerPage, atPagesToShow, $q, $rootScope, $filter, atTableConfig) {
+        function ScopeConfigWrapper(scope, jdTable, itemsPerPage, jdPagesToShow, $q, $rootScope, $filter, TableConfig) {
             if (angular.isDefined(itemsPerPage)) {
                 if (itemsPerPage.trim() === '') {
-                    itemsPerPage = atTableConfig.defaultPageSize;
+                    itemsPerPage = TableConfig.defaultPageSize;
                 } else {
                     itemsPerPage = parseInt(itemsPerPage);
                 }
@@ -127,7 +127,7 @@
             this.$filter = $filter;
             this.checkedItemsList = [];
 
-            var tableData = scope.$parent.$eval(atTable);
+            var tableData = scope.$parent.$eval(jdTable);
             scope.isMemory = false;
             if (typeof tableData === 'function') {
                 tableData = {
@@ -152,16 +152,16 @@
                 }
             }
 
-            scope.atConfig = this.atConfig = angular.extend(tableData, {
+            scope.jdConfig = this.jdConfig = angular.extend(tableData, {
                 itemsPerPage: itemsPerPage,
                 currentPage: 0,
                 sortContext: 'global',
                 orderBy: 'orderBy',
-                listName: scope.isMemory ? atTable : 'listData',
+                listName: scope.isMemory ? jdTable : 'listData',
                 sortList: [],
                 predicates: [],
                 numberOfPages: 1,
-                numberOfPagesToShow: atPagesToShow ? atPagesToShow : 5,
+                numberOfPagesToShow: jdPagesToShow ? jdPagesToShow : 5,
                 getLastPage: function() {
                     //If all pages are full it means that the next item will go on a new page.
                     if (scope.sortedAndPaginatedList.totalCount % itemsPerPage === 0) {
@@ -178,27 +178,27 @@
                 // Sort = none and currentPage = first.
                 refresh: function() {
                     $this.checkedItemsList = [];
-                    $this.callChangeEvent(0, $this.atConfig.itemsPerPage, undefined, function(list) {
+                    $this.callChangeEvent(0, $this.jdConfig.itemsPerPage, undefined, function(list) {
                         $this.setCurrentPage(0);
-                        $this.atConfig.setSortAndPredicates();
+                        $this.jdConfig.setSortAndPredicates();
                         $this.setList(list);
                         $this.keepItemSelected();
                     });
                 },
                 refreshAndGoToLastPage: function() {
-                    $this.callChangeEvent($this.atConfig.numberOfPages - 1, $this.atConfig.itemsPerPage, undefined, function(list) {
-                        $this.setCurrentPage($this.atConfig.numberOfPages - 1);
-                        $this.atConfig.setSortAndPredicates();
+                    $this.callChangeEvent($this.jdConfig.numberOfPages - 1, $this.jdConfig.itemsPerPage, undefined, function(list) {
+                        $this.setCurrentPage($this.jdConfig.numberOfPages - 1);
+                        $this.jdConfig.setSortAndPredicates();
                         $this.setList(list);
                         $this.keepItemSelected();
                     });
                 },
                 refreshAndKeepCurrentPage: function() {
-                    var predicates = $this.atConfig.predicates;
-                    var sortList = $this.atConfig.sortList;
-                    $this.callChangeEvent($this.atConfig.currentPage, $this.atConfig.itemsPerPage, $this.atConfig.predicates, function(list) {
-                        $this.setCurrentPage($this.atConfig.currentPage);
-                        $this.atConfig.setSortAndPredicates(sortList, predicates);
+                    var predicates = $this.jdConfig.predicates;
+                    var sortList = $this.jdConfig.sortList;
+                    $this.callChangeEvent($this.jdConfig.currentPage, $this.jdConfig.itemsPerPage, $this.jdConfig.predicates, function(list) {
+                        $this.setCurrentPage($this.jdConfig.currentPage);
+                        $this.jdConfig.setSortAndPredicates(sortList, predicates);
                         $this.setList(list);
                         $this.keepItemSelected();
                     });
@@ -209,12 +209,12 @@
                 clearData: function() {
                     var list = [];
                     list.totalCount = 0;
-                    scope.$eval($this.atConfig.listName + '=value', {
+                    scope.$eval($this.jdConfig.listName + '=value', {
                         value: list
                     });
                 },
                 clearTable: function() {
-                    scope.$eval($this.atConfig.listName + '=value', {
+                    scope.$eval($this.jdConfig.listName + '=value', {
                         value: null
                     });
                 },
@@ -224,7 +224,7 @@
                 checkAllItems: function(param) {
                     var currentPage = $this.getList();
                     angular.forEach(currentPage, function(obj) {
-                        $this.atConfig.checkItem(obj, param);
+                        $this.jdConfig.checkItem(obj, param);
                     });
                 },
                 prepareData: tableData.prepareData ? tableData.prepareData : function(data) {
@@ -239,22 +239,22 @@
                 }
             });
 
-            //If API paginated, atConfig data is passed to controller's atTable variable.
+            //If API paginated, jdConfig data is passed to controller's jdTable variable.
             if (!scope.isMemory) {
-                scope.$parent.$eval(atTable + '=value', {
-                    value: this.atConfig
+                scope.$parent.$eval(jdTable + '=value', {
+                    value: this.jdConfig
                 });
             }
         }
 
         ScopeConfigWrapper.prototype.getList = function() {
-            return this.scope.$eval(this.atConfig.listName);
+            return this.scope.$eval(this.jdConfig.listName);
         };
 
         ScopeConfigWrapper.prototype.getTotalCount = function() {
             var list = this.getList();
             if (list) {
-                if (this.atConfig.changeEvent) {
+                if (this.jdConfig.changeEvent) {
                     return list.totalCount;
                 } else {
                     return list.length;
@@ -265,25 +265,25 @@
         };
 
         ScopeConfigWrapper.prototype.setList = function(_list) {
-            this.scope.$eval(this.atConfig.listName + '=list', {
+            this.scope.$eval(this.jdConfig.listName + '=list', {
                 list: _list
             });
         };
 
         ScopeConfigWrapper.prototype.getSortList = function() {
-            return this.atConfig.sortList;
+            return this.jdConfig.sortList;
         };
 
         ScopeConfigWrapper.prototype.setSortList = function(sortList) {
-            return this.atConfig.sortList = sortList; // jshint ignore:line
+            return this.jdConfig.sortList = sortList; // jshint ignore:line
         };
 
         ScopeConfigWrapper.prototype.setPredicates = function(predicates) {
-            return this.atConfig.predicates = predicates; // jshint ignore:line
+            return this.jdConfig.predicates = predicates; // jshint ignore:line
         };
 
         ScopeConfigWrapper.prototype.getPredicates = function() {
-            return this.atConfig.predicates;
+            return this.jdConfig.predicates;
         };
 
         ScopeConfigWrapper.prototype.callChangeEvent = function(page, itemsPerPage, sortList, success) {
@@ -295,7 +295,7 @@
                 // caso o objeto tenha o atributo pageNo esta página será atribuída ao currentPage, caso contrário será considerado como página 0,
                 // para filtros pela tela resete a páginação/ordenação, pois não é executado por um promise, a atribuição é direto no list, não pasando por aqui.
 
-                var extractedData = $this.atConfig.prepareData(list);
+                var extractedData = $this.jdConfig.prepareData(list);
 
                 if (extractedData && !extractedData.pageNo) {
                     extractedData.pageNo = page + 1;
@@ -304,7 +304,7 @@
                 success(extractedData);
             });
 
-            this.atConfig.changeEvent({
+            this.jdConfig.changeEvent({
                 pageNo: page + 1,
                 pageSize: itemsPerPage,
                 sort: sortList
@@ -312,43 +312,43 @@
         };
 
         ScopeConfigWrapper.prototype.getItemsPerPage = function() {
-            return this.atConfig.itemsPerPage;
+            return this.jdConfig.itemsPerPage;
         };
 
         ScopeConfigWrapper.prototype.getCurrentPage = function() {
-            return this.atConfig.currentPage;
+            return this.jdConfig.currentPage;
         };
 
         ScopeConfigWrapper.prototype.getSortContext = function() {
-            return this.atConfig.sortContext;
+            return this.jdConfig.sortContext;
         };
 
         ScopeConfigWrapper.prototype.setCurrentPage = function(currentPage) {
-            return this.atConfig.currentPage = currentPage; // jshint ignore:line
+            return this.jdConfig.currentPage = currentPage; // jshint ignore:line
         };
 
         ScopeConfigWrapper.prototype.getOrderBy = function() {
-            return this.atConfig.orderBy;
+            return this.jdConfig.orderBy;
         };
 
         ScopeConfigWrapper.prototype.getOrderBy = function() {
-            return this.atConfig.orderBy;
+            return this.jdConfig.orderBy;
         };
 
         ScopeConfigWrapper.prototype.getNumberOfPages = function() {
-            return this.atConfig.numberOfPages;
+            return this.jdConfig.numberOfPages;
         };
 
         ScopeConfigWrapper.prototype.setNumberOfPages = function(numberOfPages) {
-            return this.atConfig.numberOfPages = numberOfPages; // jshint ignore:line 
+            return this.jdConfig.numberOfPages = numberOfPages; // jshint ignore:line 
         };
 
         ScopeConfigWrapper.prototype.getNumberOfPagesToShow = function() {
-            return this.atConfig.numberOfPagesToShow;
+            return this.jdConfig.numberOfPagesToShow;
         };
 
         ScopeConfigWrapper.prototype.keepItemSelected = function() {
-            var selectedItem = this.atConfig ? this.atConfig.selectedItem : undefined;
+            var selectedItem = this.jdConfig ? this.jdConfig.selectedItem : undefined;
             if (selectedItem) {
                 angular.forEach(this.getList(), function(item) {
                     //ToDo: Alterar condição para comparar todos os atributos do selectedItem.
@@ -356,15 +356,15 @@
                         selectedItem = item;
                     }
                 });
-                this.atConfig.selectedItem = selectedItem;
+                this.jdConfig.selectedItem = selectedItem;
             }
         };
 
         ScopeConfigWrapper.prototype.saveCheckedItems = function() {
             var $this = this;
             var currentPage = this.getList();
-            var filter = this.atConfig.checkedFilter();
-            var key = this.atConfig.checkedKey();
+            var filter = this.jdConfig.checkedFilter();
+            var key = this.jdConfig.checkedKey();
 
             angular.forEach(currentPage, function(pageItem) {
                 var checkedItemIndex = _.findIndex($this.checkedItemsList, function isInCheckedList(checkedItem) {
@@ -383,7 +383,7 @@
         ScopeConfigWrapper.prototype.applyCheckedItems = function() {
             var $this = this;
             var currentPage = this.getList();
-            var key = this.atConfig.checkedKey();
+            var key = this.jdConfig.checkedKey();
 
             angular.forEach(currentPage, function(pageItem) {
                 var checkedItem = _.find($this.checkedItemsList, function isInCheckedList(checkedItem) {
@@ -409,14 +409,14 @@
     })();
 
     TableConfiguration = (function() {
-        function TableConfiguration(tableElement, attributes, atTableConfig) {
+        function TableConfiguration(tableElement, attributes, TableConfig) {
             this.tableElement = tableElement;
             this.attributes = attributes;
             this.id = this.attributes.id;
-            this.paginated = this.attributes.atPaginated != null; // jshint ignore:line
-            this.list = this.attributes.atTable;
+            this.paginated = this.attributes.jdPaginated != null; // jshint ignore:line
+            this.list = this.attributes.jdTable;
             this.atChange = this.attributes.atChange;
-            this.atTableConfig = atTableConfig;
+            this.TableConfig = TableConfig;
             this.createColumnConfigurations();
         }
 
@@ -450,7 +450,7 @@
 
         TableConfiguration.prototype.getInitialSorting = function(td) {
             var initialSorting;
-            initialSorting = td.attr("at-initial-sorting");
+            initialSorting = td.attr("jd-initial-sorting");
             if (initialSorting) {
                 if (initialSorting === "asc" || initialSorting === "desc") {
                     return initialSorting;
@@ -469,12 +469,12 @@
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 th = _ref[_i];
                 th = angular.element(th);
-                customHeaderMarkups[th.attr("at-attribute")] = {
+                customHeaderMarkups[th.attr("jd-attribute")] = {
                     customContent: th.html(),
                     attributes: th[0].attributes
                 };
 
-                if (!thead.is('[at-ignore-header]')) {
+                if (!thead.is('[jd-ignore-header]')) {
                     th.remove();
                 }
             }
@@ -488,12 +488,12 @@
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 td = _ref[_i];
                 td = angular.element(td);
-                if (table.attr('at-ellipsis') !== "false") {
+                if (table.attr('jd-ellipsis') !== "false") {
                     td.addClass('text-ellipsis');
                 }
-                attribute = td.attr("at-attribute");
-                title = td.attr("at-title") || this.capitaliseFirstLetter(td.attr("at-attribute"));
-                sortable = td.attr("at-sortable") !== void 0 || this.isSortable(td.attr("class"));
+                attribute = td.attr("jd-attribute");
+                title = td.attr("jd-title") || this.capitaliseFirstLetter(td.attr("jd-attribute"));
+                sortable = td.attr("jd-sortable") !== void 0 || this.isSortable(td.attr("class"));
                 width = this.extractWidth(td.attr("width") ? td.attr("width") : td.attr("class"));
                 initialSorting = this.getInitialSorting(td);
                 bodyDefinition.push({
@@ -514,7 +514,7 @@
             this.columnConfigurations = [];
             for (_i = 0, _len = bodyMarkup.length; _i < _len; _i++) {
                 i = bodyMarkup[_i];
-                this.columnConfigurations.push(new ColumnConfiguration(i, headerMarkup[i.attribute], this.atTableConfig));
+                this.columnConfigurations.push(new ColumnConfiguration(i, headerMarkup[i.attribute], this.TableConfig));
             }
         };
 
@@ -552,12 +552,12 @@
             }
         };
 
-        PaginatedSetup.prototype.link = function($scope, $element, $attributes, $filter, $q, $rootScope, atTableConfig) {
+        PaginatedSetup.prototype.link = function($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig) {
 
             var getSortedAndPaginatedList, update, w, keepInBounds, updateCheckAll;
             var allCheckedStatus = false;
 
-            w = new ScopeConfigWrapper($scope, $attributes.atTable, $attributes.atPaginated, $attributes.atPagesToShow, $q, $rootScope, $filter, atTableConfig);
+            w = new ScopeConfigWrapper($scope, $attributes.jdTable, $attributes.jdPaginated, $attributes.jdPagesToShow, $q, $rootScope, $filter, TableConfig);
 
             getSortedAndPaginatedList = function(list, currentPage, itemsPerPage, orderBy, sortContext, predicate, $filter) {
                 var fromPage, val;
@@ -600,7 +600,7 @@
             update = function() {
                 if (w.getList()) {
                     // trecho que prepara a lista filtrada e ordenada
-                    if ($scope.atConfig.changeEvent) {
+                    if ($scope.jdConfig.changeEvent) {
                         // {length: 13, list: [object, object, object...]}
                         $scope.sortedAndPaginatedList = w.getList(); // lista de json paginado
                     } else {
@@ -630,30 +630,30 @@
                     }
 
                     updateCheckAll();
-                    $rootScope.$broadcast('Angular-Table-Restful.TableUpdated', w.atConfig);
+                    $rootScope.$broadcast('Jedi-Table.TableUpdated', w.jdConfig);
                     return $scope.pageSequence.realignGreedy(currentPage);
                 }
 
                 updateCheckAll();
-                $rootScope.$broadcast('Angular-Table-Restful.TableUpdated', w.atConfig);
+                $rootScope.$broadcast('Jedi-Table.TableUpdated', w.jdConfig);
             };
 
             updateCheckAll = function() {
-                if ($scope.hasCheck && typeof w.atConfig.onAllChecked === 'function') {
+                if ($scope.hasCheck && typeof w.jdConfig.onAllChecked === 'function') {
                     var currentPage = w.getList();
                     if (!currentPage || currentPage.length === 0) {
                         if (allCheckedStatus) {
-                            w.atConfig.onAllChecked(false);
+                            w.jdConfig.onAllChecked(false);
                             allCheckedStatus = false;
                         }
                     } else {
-                        var checkedItems = $filter('filter')(currentPage, w.atConfig.checkedFilter());
+                        var checkedItems = $filter('filter')(currentPage, w.jdConfig.checkedFilter());
 
                         // nextStatus => true when all items in the page are checked; false if at least one item is not;
                         var nextStatus = (checkedItems.length === currentPage.length && checkedItems.length !== 0);
 
                         if (nextStatus !== allCheckedStatus) {
-                            w.atConfig.onAllChecked(nextStatus);
+                            w.jdConfig.onAllChecked(nextStatus);
                             allCheckedStatus = nextStatus;
                         }
                     }
@@ -709,7 +709,7 @@
                     }
                 });
 
-                if ($scope.atConfig.changeEvent) {
+                if ($scope.jdConfig.changeEvent) {
                     if (w.getCurrentPage() !== 0) {
                         w.setCurrentPage(0);
                     }
@@ -743,7 +743,7 @@
             $scope.stepPage = function(page) {
                 page = parseInt(page);
                 page = keepInBounds(w.getCurrentPage() + page, 0, w.getNumberOfPages() - 1);
-                if ($scope.atConfig.changeEvent) {
+                if ($scope.jdConfig.changeEvent) {
                     if ($scope.hasCheck) {
                         w.saveCheckedItems();
                     }
@@ -768,7 +768,7 @@
             };
 
             $scope.goToPage = function(page) {
-                if ($scope.atConfig.changeEvent) {
+                if ($scope.jdConfig.changeEvent) {
                     if ($scope.hasCheck) {
                         w.saveCheckedItems();
                     }
@@ -789,17 +789,17 @@
 
             $scope.pageSequence = new PageSequence();
 
-            if (!$scope.atConfig.changeEvent) {
-                $scope.$watch('atConfig.currentPage', function(newValue, oldValue) {
+            if (!$scope.jdConfig.changeEvent) {
+                $scope.$watch('jdConfig.currentPage', function(newValue, oldValue) {
                     if (newValue !== oldValue) {
                         return update();
                     }
                 });
             }
 
-            $scope.$watch('atConfig.itemsPerPage', function(newValue, oldValue) {
+            $scope.$watch('jdConfig.itemsPerPage', function(newValue, oldValue) {
                 if (newValue !== oldValue) {
-                    if ($scope.atConfig.changeEvent) {
+                    if ($scope.jdConfig.changeEvent) {
                         w.callChangeEvent(w.getCurrentPage(), newValue, w.getPredicates(), function(list) {
                             w.setItemsPerPage(newValue);
                             w.setList(list);
@@ -811,8 +811,8 @@
                 }
             });
 
-            if (!$scope.atConfig.changeEvent) {
-                $scope.$watch('atConfig.sortContext', function(newValue, oldValue) {
+            if (!$scope.jdConfig.changeEvent) {
+                $scope.$watch('jdConfig.sortContext', function(newValue, oldValue) {
                     if (newValue !== oldValue) {
                         return update();
                     }
@@ -821,7 +821,7 @@
 
             // If data is in memory, listen to the changes and update the table.
             if ($scope.isMemory) {
-                $scope.$watchCollection($attributes.atTable, function(newValue, oldValue) {
+                $scope.$watchCollection($attributes.jdTable, function(newValue, oldValue) {
                     if (newValue !== oldValue) {
                         update();
                     }
@@ -831,9 +831,9 @@
                 // table changing completely (as in reloading the table, or changing page) from smaller changes (e.g.: an item being checked)
                 // The first will easily fall on the watchCollection, and the second below. In the second case we don't want to 
                 // trigger the update function, but you may need the event broadcasted
-                $scope.$watch($attributes.atTable, function(newValue, oldValue) {
+                $scope.$watch($attributes.jdTable, function(newValue, oldValue) {
                     if (newValue !== oldValue) {
-                        $rootScope.$broadcast('Angular-Table-Restful.ListChanged', w.atConfig);
+                        $rootScope.$broadcast('Jedi-Table.ListChanged', w.jdConfig);
                     }
                 }, true);
             }
@@ -845,9 +845,9 @@
                     }
                 }, true);
 
-                // If attr 'at-load-on-startup' or atConfig.loadOnStartup are defined
+                // If attr 'jd-load-on-startup' or jdConfig.loadOnStartup are defined
                 // Invoke changeEvent func to load first page
-                if ($scope.atConfig.loadOnStartup || angular.isDefined($attributes.atLoadOnStartup)) {
+                if ($scope.jdConfig.loadOnStartup || angular.isDefined($attributes.jdLoadOnStartup)) {
                     setTimeout(function() {
                         w.callChangeEvent(0, w.getItemsPerPage(), undefined, function(list) {
                             w.setList(list);
@@ -865,10 +865,10 @@
     })(Setup);
 
     Table = (function() {
-        function Table(element, tableConfiguration, atTableConfig) {
+        function Table(element, tableConfiguration, TableConfig) {
             this.element = element;
             this.tableConfiguration = tableConfiguration;
-            this.atTableConfig = atTableConfig;
+            this.TableConfig = TableConfig;
         }
 
         Table.prototype.constructHeader = function() {
@@ -893,7 +893,7 @@
                 this.element.prepend(thead);
             }
 
-            if (!thead.is('[at-ignore-header]')) {
+            if (!thead.is('[jd-ignore-header]')) {
                 header = this.constructHeader();
             }
 
@@ -913,15 +913,15 @@
 
             var emptyTableTemp;
 
-            if (this.atTableConfig.emptyTableTemplate) {
-                emptyTableTemp = this.atTableConfig.emptyTableTemplate;
+            if (this.TableConfig.emptyTableTemplate) {
+                emptyTableTemp = this.TableConfig.emptyTableTemplate;
             } else {
                 emptyTableTemp = emptyTableDefaultTemplate;
             }
 
             // In case there is a special i18n directive to use, we replace the default(i18n).
-            if (this.atTableConfig.i18nDirective) {
-                emptyTableTemp = emptyTableTemp.replace(/i18n/g, this.atTableConfig.i18nDirective);
+            if (this.TableConfig.i18nDirective) {
+                emptyTableTemp = emptyTableTemp.replace(/i18n/g, this.TableConfig.i18nDirective);
             }
 
             // TODO Viana: ver como apresentar mensagem apenas após ajax de load for executado e permanecer sem registros
@@ -929,8 +929,8 @@
             tfoot.append(emptyTableTemp);
 
             if (this.tableConfiguration.paginated) {
-                //Se o attr atScroll for false, não deve ser adicionado o scroll, logo a paginação fica normal.
-                if (this.element.attr("at-scroll") === "false") {
+                //Se o attr jdScroll for false, não deve ser adicionado o scroll, logo a paginação fica normal.
+                if (this.element.attr("jd-scroll") === "false") {
                     tfoot.append(paginationTemplate);
                 } else {
                     var pagination = angular.element(paginationTemplateScroll);
@@ -970,12 +970,12 @@
             return _results;
         };
 
-        Table.prototype.post = function($scope, $element, $attributes, $filter, $q, $rootScope, atTableConfig) {
+        Table.prototype.post = function($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig) {
             if (!$scope.getSortIcon) {
                 $scope.getSortIcon = function(predicate) {
                     var result;
-                    if ($scope.atConfig.sortList && $scope.atConfig.sortList.length > 0) {
-                        result = _.find($scope.atConfig.sortList, function(e) {
+                    if ($scope.jdConfig.sortList && $scope.jdConfig.sortList.length > 0) {
+                        result = _.find($scope.jdConfig.sortList, function(e) {
                             return e.predicate === predicate;
                         });
                     }
@@ -991,7 +991,7 @@
                 };
             }
 
-            var ret = this.setup.link($scope, $element, $attributes, $filter, $q, $rootScope, atTableConfig);
+            var ret = this.setup.link($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig);
 
             // configura ordenação inicial, caso haja
             this.setupInitialSorting($scope);
@@ -1062,7 +1062,7 @@
         return PageSequence;
 
     })();
-    angular.module("angular-table").directive("atTable", ["$filter", '$q', '$rootScope', '$compile', 'atTableConfig', function($filter, $q, $rootScope, $compile, atTableConfig) {
+    angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', 'jedi.table.TableConfig', function($filter, $q, $rootScope, $compile, TableConfig) {
         return {
             restrict: "AC",
             scope: true,
@@ -1077,25 +1077,25 @@
                     trElement.attr('ng-click', 'markSelected(item)');
                 }
 
-                trElement.attr('ng-class', "{'table-selected-row' : item == atConfig.selectedItem}");
+                trElement.attr('ng-class', "{'table-selected-row' : item == jdConfig.selectedItem}");
 
-                tc = new TableConfiguration(element, attributes, atTableConfig);
-                table = new Table(element, tc, atTableConfig);
+                tc = new TableConfiguration(element, attributes, TableConfig);
+                table = new Table(element, tc, TableConfig);
                 table.compile();
                 return {
                     post: function($scope, $element, $attributes) {
-                        table.post($scope, $element, $attributes, $filter, $q, $rootScope, atTableConfig);
+                        table.post($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig);
 
                         $scope.markSelected = function(item) {
-                            if (this.atConfig.selectedItem !== item) {
-                                this.atConfig.selectedItem = item;
+                            if (this.jdConfig.selectedItem !== item) {
+                                this.jdConfig.selectedItem = item;
                                 return;
                             }
 
-                            this.atConfig.selectedItem = undefined;
+                            this.jdConfig.selectedItem = undefined;
                         };
 
-                        if ($attributes.atScroll !== "false") {
+                        if ($attributes.jdScroll !== "false") {
                             var scroll = angular.element('<div class="table-scroll"></div>');
                             $element.before(scroll);
                             scroll.append($element);
@@ -1134,18 +1134,18 @@
         };
     }]);
 
-    angular.module("angular-table").directive("atAttribute", [function() {
+    angular.module("jedi.table").directive("jdAttribute", [function() {
         return {
             restrict: "A",
             compile: function(element, attributes) {
                 var attribute;
-                attribute = element.attr("at-attribute");
+                attribute = element.attr("jd-attribute");
                 if (!attribute) {
-                    throw "at-attribute specified without value: " + (element.html());
+                    throw "jd-attribute specified without value: " + (element.html());
                 }
                 if (element.children().length === 0) {
-                    if (attributes.atFilter) {
-                        return element.append("{{item." + attribute + " | " + attributes.atFilter + "}}");
+                    if (attributes.jdFilter) {
+                        return element.append("{{item." + attribute + " | " + attributes.jdFilter + "}}");
                     } else {
                         return element.append("{{item." + attribute + "}}");
                     }

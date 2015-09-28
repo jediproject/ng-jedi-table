@@ -1,4 +1,4 @@
-# angular-table-restful
+# ng-jedi-table
 A table for [AngularJs](https://angularjs.org/) with support for restful API standard.
 
 ##### [DEMO](http://jediproject.github.io/ng-jedi-table/)
@@ -13,20 +13,20 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
 * Use [bower](http://bower.io/) to install the package: 
 
     ```shell
-    bower install angular-table-restful --save
+    bower install ng-jedi-table --save
     ```
 
 * Or manually add the following files to your page:
 
-    ```css
-    <link rel="stylesheet" href="../angular-table-restful.css">
-    <script src='../angular-table-restful.js'></script>
+    ```html
+    <link rel="stylesheet" href="../ng-jedi-table.css">
+    <script src='../ng-jedi-table.js'></script>
     ```
 
 * Include module dependency:
 
    ```javascript
-   angular.module('yourApp', ['angular-table']);
+   angular.module('yourApp', ['jedi.table']);
    ```
 ======
 
@@ -42,38 +42,38 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
 
 ### How To Use
 
-  1. [atTable](#attable)
-  1. [atPaginated](#atpaginated)
-  1. [atAttribute](#atattribute)
-  1. [atTitle](#attitle)
-  1. [atSortable](#atsortable)
-  1. [atScroll](#atscroll)
-  1. [atEllipsis](#atellipsis)
-  1. [atLoadOnStartup](#atloadonstartup)
-  1. [atPagesToShow](#atpagestoshow)  
+  1. [jdTable](#jdtable)
+  1. [jdPaginated](#jdpaginated)
+  1. [jdAttribute](#jdattribute)
+  1. [jdTitle](#jdtitle)
+  1. [jdSortable](#jdsortable)
+  1. [jdScroll](#jdscroll)
+  1. [jdEllipsis](#jdellipsis)
+  1. [jdLoadOnStartup](#jdloadonstartup)
+  1. [jdPagesToShow](#jdpagestoshow)
   1. [InMemory Example](#inmemory-example)
   1. [API Pagination Example](#api-pagination-example)
   1. [Events](#events)
 
-#### atTable
+#### jdTable
 
    - This is the main attribute that you are going to use and where the magic happens. It receives both the data that will be used to load the grid (in memory) and also receives an object or a function that will be used to manipulate the API Pagination data.
 
-#### atPaginated
+#### jdPaginated
 
    - This attribute is responsible for displaying the pagination at the bottom of the table. In case you don't want to display it, just don't use this attribute.
 
-#### atAttribute
+#### jdAttribute
 
    - This attribute is responsible for binding the items in the array and creating the header for each one of them (The value should match with item's attribute name).
 
-#### atIgnoreHeader
+#### jdIgnoreHeader
 
-   - This attribute is responsible for unbinding the ```at-attribute```  header, rendering only the ```thead``` that is written explicitly in the html allowing you to customize the header the way you want it. e.g.:
+   - This attribute is responsible for unbinding the ```jd-attribute```  header, rendering only the ```thead``` that is written explicitly in the html allowing you to customize the header the way you want it. e.g.:
 ```html
 <!-- Keep in mind that you can add ng-if/ng-show or anything that you want to make the table that matches your needs -->
-<table at-table="vm.myList">
-<thead at-ignore-header>
+<table jd-table="vm.myList">
+<thead jd-ignore-header>
     <tr>
         <th> <!-- Some custom header, like a checkbox to check all items or make a group header separator--></th>
     </tr>        
@@ -86,34 +86,34 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
 </table>
 ```
 
-#### atTitle
+#### jdTitle
 
-   - This attribute is responsible for changing the header name that will be displayed. If this attribute is not used, the default will be the [atAttribute](#atattribute) value.
+   - This attribute is responsible for changing the header name that will be displayed. If this attribute is not used, the default will be the [jdAttribute](#jdattribute) value.
 
-#### atSortable
+#### jdSortable
 
    - This attribute is responsible for enabling sort at the specific column. If this attribute is not used, the column will not be sortable.
 
-#### atScroll
+#### jdScroll
 
    - This attribute is responsible for adding a horizontal scroll to the table for responsive purposes. By default if you resize your browser you'll see the scroll, if you don't want it you need to add this attribute and set it to false. e.g.:
 ```html
-<table at-scroll="false">
+<table jd-scroll="false">
 ```
 
-#### atEllipsis
+#### jdEllipsis
 
    - This attribute is responsible for adding a '...' at the end of each cell when it's content is too large. Its a default behavior, in case you don't want it add the attribute and set it to false. e.g.:
 ```html
-<table at-ellipsis="false">
+<table jd-ellipsis="false">
 ```
 
-#### atLoadOnStartup
+#### jdLoadOnStartup
 
    - (API Pagination only) This attribute is responsible for loading the table when the page is loaded, triggering the changeEvent function. e.g.:
        + 1st way:
     ```html
-    <table at-load-on-startup>
+    <table jd-load-on-startup>
     ```
        + 2nd way:
           Inside the controller, at the ```vm.myTableConfig``` add the following attribute:
@@ -125,11 +125,11 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
     };
     ```
 
-#### atPagesToShow
+#### jdPagesToShow
 
    - (API Pagination only) This attribute is responsible for the number of pages that will be displayed in the pagination (default: 5). e.g.:
 ```html
-<table at-pages-to-show="10">
+<table jd-pages-to-show="10">
 ```
    
 #### InMemory Example:
@@ -138,12 +138,12 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
 
     + View
     ```html
-        <table at-table="vm.myList" at-paginated>
+        <table jd-table="vm.myList" jd-paginated>
             <tbody>
                 <tr>    
-                    <td at-sortable at-attribute="index" at-title="Index"></td>
-                    <td at-sortable at-attribute="name" at-title="Name"></td>
-                    <td at-sortable at-attribute="email" at-title="Email"></td>
+                    <td jd-sortable jd-attribute="index" jd-title="Index"></td>
+                    <td jd-sortable jd-attribute="name" jd-title="Name"></td>
+                    <td jd-sortable jd-attribute="email" jd-title="Email"></td>
                 </tr>
             </tbody>
         </table>
@@ -151,7 +151,7 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
        
     + Controller
     ```javascript
-        angular.module("angular-table-restful-example")
+        angular.module("jedi-table-example")
         .controller("basicExampleCtrl", [function() {
             var vm = this;
             vm.myList = [
@@ -169,12 +169,12 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
    
   - View
   ```html
-      <table at-table="vm.myTableConfig" at-paginated>
+      <table jd-table="vm.myTableConfig" jd-paginated>
           <tbody>
               <tr>    
-                  <td at-sortable at-attribute="index" at-title="Index"></td>
-                  <td at-sortable at-attribute="name" at-title="Name"></td>
-                  <td at-sortable at-attribute="email" at-title="Email"></td>
+                  <td jd-sortable jd-attribute="index" jd-title="Index"></td>
+                  <td jd-sortable jd-attribute="name" jd-title="Name"></td>
+                  <td jd-sortable jd-attribute="email" jd-title="Email"></td>
               </tr>
           </tbody>
       </table>
@@ -183,7 +183,7 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
   - Controller
 
     ```javascript
-      angular.module("angular-table-restful-example")
+      angular.module("jedi-table-example")
       .controller("basicExampleCtrl", ['$http', function($http) {
           var vm = this;
 
@@ -206,7 +206,7 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
 
       + ```vm.myTableConfig``` must have a changeEvent function that will be triggered for the API Pagination to work.
     
-      + Also you can access a lot of the table's functionalities from your controller through the ```vm.myTableConfig``` because the angular-table-restful injects methods and attributes to it, making data manipulation easy. e.g.:
+      + Also you can access a lot of the table's functionalities from your controller through the ```vm.myTableConfig``` because the ng-jedi-table injects methods and attributes to it, making data manipulation easy. e.g.:
           * getList -> Function that returns the elements currently displayd on screen
           * clearData -> Function to clear all table items, making it empty and displaying default emptyTableTemplate message.
           * clearTable -> Function to clear all table making it's list null and not displaying any message or items, just the table's headers
@@ -260,16 +260,16 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
           View
 
           ```html
-          <table at-table="vm.myTableConfig" at-paginated>
+          <table jd-table="vm.myTableConfig" jd-paginated>
           <thead>
               <tr>
-                  <th at-attribute="Select" class="text-center">
+                  <th jd-attribute="Select" class="text-center">
                       <input type="checkbox" ng-model="vm.allChecked" ng-change="vm.checkboxChange()"/>
                   </th>
           </thead>
           <tbody>
             <tr>
-                <td at-attribute="Select" class="text-center">
+                <td jd-attribute="Select" class="text-center">
                     <input type="checkbox" ng-model="item.selected" />
                 </td>
             </tr>
@@ -298,24 +298,24 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
 
 #### Events
    
-   The angular-table also broadcasts two events, always passing the config object as the argument (the same on "vm.myTableConfig" for API paginated tables). With this object you can check many properties and values on the table (e.g.: the list of elemets currently displayed or the selected page), and take any action you feel necessary. The two events are:
+   The jedi-table also broadcasts two events, always passing the config object as the argument (the same on "vm.myTableConfig" for API paginated tables). With this object you can check many properties and values on the table (e.g.: the list of elemets currently displayed or the selected page), and take any action you feel necessary. The two events are:
 
-  - ListChanged - 'Angular-Table-Restful.ListChanged'
+  - ListChanged - 'Jedi-Table.ListChanged'
     + It fully watches every element in the list, and emits this event when something from outside changed any value in any element of the list. That can be caused by user interaction, your controller, etc. It is used only when the table is working "in memory" (not using API pagination), because otherwise the list is not exposed to be changed at all.
   
-  - TableUpdated - 'Angular-Table-Restful.TableUpdated'
+  - TableUpdated - 'Jedi-Table.TableUpdated'
     + Emitted whenever the table is updated, that can be when the page changes, the list is ordered in someway, or even when an item is "checked" (for this last case, the event is only emitted when the table is paginated through API). 
 
   - Example:
 
 ```javascript
-angular.module("angular-table-restful-example")
+angular.module("jedi-table-example")
     .controller("eventsExampleCtrl", ['$scope', function($scope) {
       var vm = this;
       //...
 
-      $scope.$on('Angular-Table-Restful.TableUpdated', tableChanged);
-      $scope.$on('Angular-Table-Restful.ListChanged', tableChanged);
+      $scope.$on('Jedi-Table.TableUpdated', tableChanged);
+      $scope.$on('Jedi-Table.ListChanged', tableChanged);
 
       function tableChanged(e, atConfig) {
           var list = atConfig.getList();

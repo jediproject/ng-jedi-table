@@ -16,15 +16,15 @@ module.exports = (grunt) ->
         clean:
             working:
                 src: [
-                    'angular-table-restful.js'
+                    'ng-jedi-table.js'
                 ]
 
         uglify:
 
             # concat js files before minification
             js:
-                src: ['angular-table-restful.js']
-                dest: 'angular-table-restful.min.js'
+                src: ['ng-jedi-table.js']
+                dest: 'ng-jedi-table.min.js'
                 options:
                     banner: '<%= banner %>'
                     sourceMap: (fileName) ->
@@ -42,7 +42,7 @@ module.exports = (grunt) ->
                     'src/module.js',
                     'src/outro.js'
                 ]
-                dest: 'angular-table-restful.js'
+                dest: 'ng-jedi-table.js'
 
     # Register grunt tasks supplied by grunt-contrib-*.
     # Referenced in package.json.

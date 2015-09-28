@@ -1,4 +1,4 @@
-    angular.module("angular-table").directive("atTable", ["$filter", '$q', '$rootScope', '$compile', 'atTableConfig', function($filter, $q, $rootScope, $compile, atTableConfig) {
+    angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', 'jedi.table.TableConfig', function($filter, $q, $rootScope, $compile, TableConfig) {
         return {
             restrict: "AC",
             scope: true,
@@ -13,25 +13,25 @@
                     trElement.attr('ng-click', 'markSelected(item)');
                 }
 
-                trElement.attr('ng-class', "{'table-selected-row' : item == atConfig.selectedItem}");
+                trElement.attr('ng-class', "{'table-selected-row' : item == jdConfig.selectedItem}");
 
-                tc = new TableConfiguration(element, attributes, atTableConfig);
-                table = new Table(element, tc, atTableConfig);
+                tc = new TableConfiguration(element, attributes, TableConfig);
+                table = new Table(element, tc, TableConfig);
                 table.compile();
                 return {
                     post: function($scope, $element, $attributes) {
-                        table.post($scope, $element, $attributes, $filter, $q, $rootScope, atTableConfig);
+                        table.post($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig);
 
                         $scope.markSelected = function(item) {
-                            if (this.atConfig.selectedItem !== item) {
-                                this.atConfig.selectedItem = item;
+                            if (this.jdConfig.selectedItem !== item) {
+                                this.jdConfig.selectedItem = item;
                                 return;
                             }
 
-                            this.atConfig.selectedItem = undefined;
+                            this.jdConfig.selectedItem = undefined;
                         };
 
-                        if ($attributes.atScroll !== "false") {
+                        if ($attributes.jdScroll !== "false") {
                             var scroll = angular.element('<div class="table-scroll"></div>');
                             $element.before(scroll);
                             scroll.append($element);
@@ -70,18 +70,18 @@
         };
     }]);
 
-    angular.module("angular-table").directive("atAttribute", [function() {
+    angular.module("jedi.table").directive("jdAttribute", [function() {
         return {
             restrict: "A",
             compile: function(element, attributes) {
                 var attribute;
-                attribute = element.attr("at-attribute");
+                attribute = element.attr("jd-attribute");
                 if (!attribute) {
-                    throw "at-attribute specified without value: " + (element.html());
+                    throw "jd-attribute specified without value: " + (element.html());
                 }
                 if (element.children().length === 0) {
-                    if (attributes.atFilter) {
-                        return element.append("{{item." + attribute + " | " + attributes.atFilter + "}}");
+                    if (attributes.jdFilter) {
+                        return element.append("{{item." + attribute + " | " + attributes.jdFilter + "}}");
                     } else {
                         return element.append("{{item." + attribute + "}}");
                     }
