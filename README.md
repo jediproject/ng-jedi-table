@@ -1,7 +1,7 @@
 # angular-table-restful
 A table for [AngularJs](https://angularjs.org/) with support for restful API standard.
 
-##### [DEMO](http://mateusmcg.github.io/angular-table-restful/)
+##### [DEMO](http://jediproject.github.io/ng-jedi-table/)
 
   1. [Install](#install)
   1. [API Pagination](#api-pagination)
