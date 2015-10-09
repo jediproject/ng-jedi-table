@@ -1,11 +1,16 @@
 {
-    "name": "angular-table-restful",
+    "name": "ng-jedi-table",
     "version": "0.0.1",
-    "homepage": "https://github.com/mateusmcg/angular-table-restful",
+    "homepage": "https://github.com/jediproject/ng-jedi-table",
     "description": "Angular Table with support for API Pagination",
+    "main": [
+    "ng-jedi-table.js",
+    "ng-jedi-table.css"    
+  ],
     "author": {
         "name": "mateusmcg",
-        "url": "https://github.com/mateusmcg"
+        "email": "mateus_mcg@icloud.com",
+        "url": "http://jediproject.github.io",
     },
     "dependencies": {
         "coffee-script": "~1.6.2",
