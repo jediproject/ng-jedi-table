@@ -1,2 +1,3 @@
+	}); //end define[]
 
 }).call(this);

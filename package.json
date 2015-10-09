@@ -4,13 +4,13 @@
     "homepage": "https://github.com/jediproject/ng-jedi-table",
     "description": "Angular Table with support for API Pagination",
     "main": [
-    "ng-jedi-table.js",
-    "ng-jedi-table.css"    
-  ],
+        "ng-jedi-table.js",
+        "ng-jedi-table.css"    
+    ],
     "author": {
         "name": "mateusmcg",
         "email": "mateus_mcg@icloud.com",
-        "url": "http://jediproject.github.io",
+        "url": "http://jediproject.github.io"
     },
     "dependencies": {
         "coffee-script": "~1.6.2",
