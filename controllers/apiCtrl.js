@@ -1,4 +1,4 @@
-angular.module("angular-table-restful-example").controller("apiCtrl", ["$http", function($http) {
+angular.module("jedi-table-example").controller("apiCtrl", ["$http", function($http) {
   var vm = this;
 
   vm.clear = clear;

@@ -1,4 +1,4 @@
-angular.module("angular-table-restful-example").controller("interactiveExampleCtrl", ["personList", "$filter", '$timeout', function(personList, $filter, $timeout) {
+angular.module("jedi-table-example").controller("interactiveExampleCtrl", ["personList", "$filter", '$timeout', function(personList, $filter, $timeout) {
 
   var vm = this;	
 

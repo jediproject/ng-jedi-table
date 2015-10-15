@@ -1,21 +1,21 @@
 <div class="row" ng-controller="customizingCtrl as vm">
 
-    <h3>No Pagination. Remove <code>at-paginated</code></h3>
+    <h3>No Pagination. Remove <code>jd-paginated</code></h3>
     <div class="row">
         <div class="col-md-4">
-            <table at-table="vm.list">
+            <table jd-table="vm.list">
                 <tbody>
                     <tr>
-                        <td at-sortable at-attribute="name"></td>
+                        <td jd-sortable jd-attribute="name"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-md-8">
-<article class="markdown-body"><div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">table</span> <span class="pl-e">at-table</span>=<span class="pl-s"><span class="pl-pds">"</span>vm.list<span class="pl-pds">"</span></span>&gt;
+<article class="markdown-body"><div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">table</span> <span class="pl-e">jd-table</span>=<span class="pl-s"><span class="pl-pds">"</span>vm.list<span class="pl-pds">"</span></span>&gt;
     &lt;<span class="pl-ent">tbody</span>&gt;
         &lt;<span class="pl-ent">tr</span>&gt;
-            &lt;<span class="pl-ent">td</span> <span class="pl-e">at-sortable</span> <span class="pl-e">at-attribute</span>=<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">td</span>&gt;
+            &lt;<span class="pl-ent">td</span> <span class="pl-e">jd-sortable</span> <span class="pl-e">jd-attribute</span>=<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">td</span>&gt;
         &lt;/<span class="pl-ent">tr</span>&gt;
     &lt;/<span class="pl-ent">tbody</span>&gt;
 &lt;/<span class="pl-ent">table</span>&gt;</pre></div>
@@ -25,22 +25,22 @@
 
     <hr />
 
-    <h3>For custom header name use: <code>at-title</code></h3>
+    <h3>For custom header name use: <code>jd-title</code></h3>
     <div class="row">
         <div class="col-md-4">
-            <table at-table="vm.list" at-paginated="5">
+            <table jd-table="vm.list" jd-paginated="5">
                 <tbody>
                     <tr>
-                        <td at-sortable at-attribute="name" at-title="A Custom Header for the 'name' Column"></td>
+                        <td jd-sortable jd-attribute="name" jd-title="A Custom Header for the 'name' Column"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-md-8">
-<article class="markdown-body"><div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">table</span> <span class="pl-e">at-table</span>=<span class="pl-s"><span class="pl-pds">"</span>vm.list<span class="pl-pds">"</span></span> <span class="pl-e">at-paginated</span>=<span class="pl-s"><span class="pl-pds">"</span>5<span class="pl-pds">"</span></span>&gt;
+<article class="markdown-body"><div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">table</span> <span class="pl-e">jd-table</span>=<span class="pl-s"><span class="pl-pds">"</span>vm.list<span class="pl-pds">"</span></span> <span class="pl-e">jd-paginated</span>=<span class="pl-s"><span class="pl-pds">"</span>5<span class="pl-pds">"</span></span>&gt;
     &lt;<span class="pl-ent">tbody</span>&gt;
         &lt;<span class="pl-ent">tr</span>&gt;
-            &lt;<span class="pl-ent">td</span> <span class="pl-e">at-sortable</span> <span class="pl-e">at-attribute</span>=<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span> <span class="pl-e">at-title</span>=<span class="pl-s"><span class="pl-pds">"</span>A Custom Header for the 'name' Column<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">td</span>&gt;
+            &lt;<span class="pl-ent">td</span> <span class="pl-e">jd-sortable</span> <span class="pl-e">jd-attribute</span>=<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span> <span class="pl-e">jd-title</span>=<span class="pl-s"><span class="pl-pds">"</span>A Custom Header for the 'name' Column<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">td</span>&gt;
         &lt;/<span class="pl-ent">tr</span>&gt;
     &lt;/<span class="pl-ent">tbody</span>&gt;
 &lt;/<span class="pl-ent">table</span>&gt;</pre></div>
@@ -50,22 +50,22 @@
 
     <hr />
 
-    <h3>No sort. Remove <code>at-sortable</code></h3>
+    <h3>No sort. Remove <code>jd-sortable</code></h3>
     <div class="row">
         <div class="col-md-4">
-            <table at-table="vm.list" at-paginated="5">
+            <table jd-table="vm.list" jd-paginated="5">
                 <tbody>
                     <tr>
-                        <td at-attribute="name"></td>
+                        <td jd-attribute="name"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-md-8">
-<article class="markdown-body"><div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">table</span> <span class="pl-e">at-table</span>=<span class="pl-s"><span class="pl-pds">"</span>vm.list<span class="pl-pds">"</span></span> <span class="pl-e">at-paginated</span>=<span class="pl-s"><span class="pl-pds">"</span>5<span class="pl-pds">"</span></span>&gt;
+<article class="markdown-body"><div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">table</span> <span class="pl-e">jd-table</span>=<span class="pl-s"><span class="pl-pds">"</span>vm.list<span class="pl-pds">"</span></span> <span class="pl-e">jd-paginated</span>=<span class="pl-s"><span class="pl-pds">"</span>5<span class="pl-pds">"</span></span>&gt;
     &lt;<span class="pl-ent">tbody</span>&gt;
         &lt;<span class="pl-ent">tr</span>&gt;
-            &lt;<span class="pl-ent">td</span> <span class="pl-e">at-attribute</span>=<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">td</span>&gt;
+            &lt;<span class="pl-ent">td</span> <span class="pl-e">jd-attribute</span>=<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">td</span>&gt;
         &lt;/<span class="pl-ent">tr</span>&gt;
     &lt;/<span class="pl-ent">tbody</span>&gt;
 &lt;/<span class="pl-ent">table</span>&gt;</pre></div>

@@ -1,4 +1,4 @@
-angular.module("angular-table-restful-example").controller("customizingCtrl", [function() {
+angular.module("jedi-table-example").controller("customizingCtrl", [function() {
   var vm = this;	
 
   vm.list = [

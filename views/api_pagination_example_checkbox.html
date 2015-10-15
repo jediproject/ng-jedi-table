@@ -4,17 +4,17 @@
 	</div>	
 
 	<div class="col-md-8">		
-	    <table at-table="vm.myTableConfig " at-paginated="5">
+	    <table jd-table="vm.myTableConfig " jd-paginated="5">
 			<thead>
 			    <tr>
-			        <th at-attribute="Select" class="text-center">
+			        <th jd-attribute="Select" class="text-center">
 			            <input type="checkbox" ng-model="vm.allChecked" ng-click="vm.checkboxChange()"/>
 			        </th>
 			</thead>	    
 	        <tbody>
 	            <tr>
-	            	<td at-attribute="Select" class="text-center"><input type="checkbox" ng-model="item.selected" /></td>
-	                <td at-sortable at-attribute="name" at-title="Name"></td>
+	            	<td jd-attribute="Select" class="text-center"><input type="checkbox" ng-model="item.selected" /></td>
+	                <td jd-sortable jd-attribute="name" jd-title="Name"></td>
 	            </tr>
 	        </tbody>
 	    </table>

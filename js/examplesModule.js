@@ -1,7 +1,7 @@
-angular.module("angular-table-restful-example", ["angular-table", "angular-tabs"])
+angular.module("jedi-table-example", ["angular-table", "angular-tabs"])
 
 
-angular.module("angular-table-restful-example").constant('personList', [
+angular.module("jedi-table-example").constant('personList', [
       {
         index: 1,
         name: "Kristin Hill",
