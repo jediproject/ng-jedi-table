@@ -12,7 +12,7 @@
   <p>The only thing that you need for the API Pagination to work is the 'vm.myTableConfig' object along with the 'changeEvent' function. All the other things are up to you and are shown here for example purpose.</p>
   <p>Check out the 'vm.myTableConfig' object at the console log for more details.</p>
 </div>
-<article class="markdown-body"><div class="highlight highlight-source-js"><pre>angular.module(<span class="pl-s"><span class="pl-pds">"</span>angular-table-restful-example<span class="pl-pds">"</span></span>).controller(<span class="pl-s"><span class="pl-pds">"</span>apiCtrl<span class="pl-pds">"</span></span>, [<span class="pl-s"><span class="pl-pds">"</span>$http<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">$http</span>) {
+<article class="markdown-body"><div class="highlight highlight-source-js"><pre>angular.module(<span class="pl-s"><span class="pl-pds">"</span>jedi-table-example<span class="pl-pds">"</span></span>).controller(<span class="pl-s"><span class="pl-pds">"</span>apiCtrl<span class="pl-pds">"</span></span>, [<span class="pl-s"><span class="pl-pds">"</span>$http<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">$http</span>) {
   <span class="pl-k">var</span> vm <span class="pl-k">=</span> <span class="pl-v">this</span>;
 
   vm.<span class="pl-c1">clear</span> <span class="pl-k">=</span> clear;
@@ -25,8 +25,8 @@
     loadOnStartup<span class="pl-k">:</span> <span class="pl-c1">true</span> <span class="pl-c">//Responsible to load the table when page loads.</span>
   };
 
-  $scope.$on(<span class="pl-s"><span class="pl-pds">'</span>Angular-Table-Restful.TableUpdated<span class="pl-pds">'</span></span>, tableChanged);
-  $scope.$on(<span class="pl-s"><span class="pl-pds">'</span>Angular-Table-Restful.ListChanged<span class="pl-pds">'</span></span>, tableChanged);
+  $scope.$on(<span class="pl-s"><span class="pl-pds">'</span>Jedi-Table.TableUpdated<span class="pl-pds">'</span></span>, tableChanged);
+  $scope.$on(<span class="pl-s"><span class="pl-pds">'</span>Jedi-Table.ListChanged<span class="pl-pds">'</span></span>, tableChanged);
 
   <span class="pl-k">function</span> <span class="pl-en">tableChanged</span>(<span class="pl-smi">e</span>, <span class="pl-smi">atConfig</span>) {
       <span class="pl-k">var</span> list = atConfig.getList();

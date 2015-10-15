@@ -1,4 +1,4 @@
-angular.module("jedi-table-example", ["angular-table", "angular-tabs"])
+angular.module("jedi-table-example", ["jedi.table", "angular-tabs"])
 
 
 angular.module("jedi-table-example").constant('personList', [
