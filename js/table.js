@@ -11,7 +11,7 @@
 // license:  MIT 
 // homepage: https://github.com/jediproject/ng-jedi-table
 (function() {
-    'use strict';
+    'use strict';    
 
     define(['angular', 'jquery', 'lodash'], function () {
         var ColumnConfiguration, PageSequence, PaginatedSetup, ScopeConfigWrapper, Setup, Table, TableConfiguration, emptyTableDefaultTemplate, paginationTemplate, paginationTemplateScroll,
