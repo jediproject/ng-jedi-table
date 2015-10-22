@@ -10,13 +10,19 @@
 // version: 0.0.1
 // license:  MIT 
 // homepage: https://github.com/jediproject/ng-jedi-table
-(function() {
-    'use strict';    
+(function () {
+    'use strict';
 
-    define(['angular', 'jquery', 'lodash'], function () {
+    (function (factory) {
+        if (typeof define === 'function' && define.amd) {
+            define(['angular', 'jquery', 'lodash'], factory); // AMD
+        } else {
+            factory(); // node or other global
+        }
+    }(function () {
         var ColumnConfiguration, PageSequence, PaginatedSetup, ScopeConfigWrapper, Setup, Table, TableConfiguration, emptyTableDefaultTemplate, paginationTemplate, paginationTemplateScroll,
             __hasProp = {}.hasOwnProperty,
-            __extends = function(child, parent) {
+            __extends = function (child, parent) {
                 for (var key in parent) {
                     if (__hasProp.call(parent, key)) {
                         child[key] = parent[key];
@@ -41,8 +47,8 @@
             defaultPageSize: 10,
             emptyTableTemplate: ''
         });
-    
-        ColumnConfiguration = (function() {
+
+        ColumnConfiguration = (function () {
             function ColumnConfiguration(bodyMarkup, headerMarkup, TableConfig) {
                 this.attribute = bodyMarkup.attribute;
                 this.title = bodyMarkup.title;
@@ -56,7 +62,7 @@
                 this.TableConfig = TableConfig;
             }
 
-            ColumnConfiguration.prototype.createElement = function() {
+            ColumnConfiguration.prototype.createElement = function () {
                 var th;
                 th = angular.element(document.createElement("th"));
 
@@ -67,11 +73,11 @@
                 return th;
             };
 
-            ColumnConfiguration.prototype.renderTitle = function(element) {
+            ColumnConfiguration.prototype.renderTitle = function (element) {
                 return element.html(this.customContent || this.title);
             };
 
-            ColumnConfiguration.prototype.renderAttributes = function(element) {
+            ColumnConfiguration.prototype.renderAttributes = function (element) {
                 var attribute, _i, _len, _ref, _results;
                 if (this.attributes) {
                     _ref = this.attributes;
@@ -84,7 +90,7 @@
                 }
             };
 
-            ColumnConfiguration.prototype.renderSorting = function(element) {
+            ColumnConfiguration.prototype.renderSorting = function (element) {
                 var icon;
                 if (this.sortable) {
                     element.attr("ng-click", "sort('" + this.attribute + "')");
@@ -94,11 +100,11 @@
                 }
             };
 
-            ColumnConfiguration.prototype.renderWidth = function(element) {
+            ColumnConfiguration.prototype.renderWidth = function (element) {
                 return element.attr("width", this.width);
             };
 
-            ColumnConfiguration.prototype.renderHtml = function() {
+            ColumnConfiguration.prototype.renderHtml = function () {
                 var th;
                 th = this.createElement();
                 this.renderTitle(th);
@@ -112,7 +118,7 @@
 
         })();
 
-        ScopeConfigWrapper = (function() {
+        ScopeConfigWrapper = (function () {
             function ScopeConfigWrapper(scope, jdTable, itemsPerPage, jdPagesToShow, $q, $rootScope, $filter, TableConfig) {
                 if (angular.isDefined(itemsPerPage)) {
                     if (itemsPerPage.trim() === '') {
@@ -142,11 +148,11 @@
                     if (tableData.checkedKey && tableData.checkedFilter) {
                         scope.hasCheck = true;
                         tableData = angular.extend(tableData, {
-                            getCheckedItems: function() {
+                            getCheckedItems: function () {
                                 $this.saveCheckedItems();
                                 return $this.checkedItemsList;
                             },
-                            clearAllCheckedItems: function() {
+                            clearAllCheckedItems: function () {
                                 $this.checkedItemsList = [];
                             }
                         });
@@ -163,7 +169,7 @@
                     predicates: [],
                     numberOfPages: 1,
                     numberOfPagesToShow: jdPagesToShow ? jdPagesToShow : 5,
-                    getLastPage: function() {
+                    getLastPage: function () {
                         //If all pages are full it means that the next item will go on a new page.
                         if (scope.sortedAndPaginatedList.totalCount % itemsPerPage === 0) {
                             return this.numberOfPages + 1;
@@ -171,64 +177,64 @@
 
                         return this.numberOfPages;
                     },
-                    setSortAndPredicates: function(sort, predicates) {
+                    setSortAndPredicates: function (sort, predicates) {
                         this.sortList = sort ? sort : [];
                         this.predicates = predicates ? predicates : [];
                     },
                     // If not in memory
                     // Sort = none and currentPage = first.
-                    refresh: function() {
+                    refresh: function () {
                         $this.checkedItemsList = [];
-                        $this.callChangeEvent(0, $this.jdConfig.itemsPerPage, undefined, function(list) {
+                        $this.callChangeEvent(0, $this.jdConfig.itemsPerPage, undefined, function (list) {
                             $this.setCurrentPage(0);
                             $this.jdConfig.setSortAndPredicates();
                             $this.setList(list);
                             $this.keepItemSelected();
                         });
                     },
-                    refreshAndGoToLastPage: function() {
-                        $this.callChangeEvent($this.jdConfig.numberOfPages - 1, $this.jdConfig.itemsPerPage, undefined, function(list) {
+                    refreshAndGoToLastPage: function () {
+                        $this.callChangeEvent($this.jdConfig.numberOfPages - 1, $this.jdConfig.itemsPerPage, undefined, function (list) {
                             $this.setCurrentPage($this.jdConfig.numberOfPages - 1);
                             $this.jdConfig.setSortAndPredicates();
                             $this.setList(list);
                             $this.keepItemSelected();
                         });
                     },
-                    refreshAndKeepCurrentPage: function() {
+                    refreshAndKeepCurrentPage: function () {
                         var predicates = $this.jdConfig.predicates;
                         var sortList = $this.jdConfig.sortList;
-                        $this.callChangeEvent($this.jdConfig.currentPage, $this.jdConfig.itemsPerPage, $this.jdConfig.predicates, function(list) {
+                        $this.callChangeEvent($this.jdConfig.currentPage, $this.jdConfig.itemsPerPage, $this.jdConfig.predicates, function (list) {
                             $this.setCurrentPage($this.jdConfig.currentPage);
                             $this.jdConfig.setSortAndPredicates(sortList, predicates);
                             $this.setList(list);
                             $this.keepItemSelected();
                         });
                     },
-                    hasData: function() {
+                    hasData: function () {
                         return $this.getList() ? $this.getList().length > 0 : false;
                     },
-                    clearData: function() {
+                    clearData: function () {
                         var list = [];
                         list.totalCount = 0;
                         scope.$eval($this.jdConfig.listName + '=value', {
                             value: list
                         });
                     },
-                    clearTable: function() {
+                    clearTable: function () {
                         scope.$eval($this.jdConfig.listName + '=value', {
                             value: null
                         });
                     },
-                    getList: function() {
+                    getList: function () {
                         return $this.getList() ? $this.getList().slice(0) : undefined;
                     },
-                    checkAllItems: function(param) {
+                    checkAllItems: function (param) {
                         var currentPage = $this.getList();
-                        angular.forEach(currentPage, function(obj) {
+                        angular.forEach(currentPage, function (obj) {
                             $this.jdConfig.checkItem(obj, param);
                         });
                     },
-                    prepareData: tableData.prepareData ? tableData.prepareData : function(data) {
+                    prepareData: tableData.prepareData ? tableData.prepareData : function (data) {
                         var extractedData = data;
                         if (!_.isArray(data) && data.pageItems && data.pageNo && data.totalCount >= 0) {
                             extractedData = [];
@@ -248,11 +254,11 @@
                 }
             }
 
-            ScopeConfigWrapper.prototype.getList = function() {
+            ScopeConfigWrapper.prototype.getList = function () {
                 return this.scope.$eval(this.jdConfig.listName);
             };
 
-            ScopeConfigWrapper.prototype.getTotalCount = function() {
+            ScopeConfigWrapper.prototype.getTotalCount = function () {
                 var list = this.getList();
                 if (list) {
                     if (this.jdConfig.changeEvent) {
@@ -265,32 +271,32 @@
                 }
             };
 
-            ScopeConfigWrapper.prototype.setList = function(_list) {
+            ScopeConfigWrapper.prototype.setList = function (_list) {
                 this.scope.$eval(this.jdConfig.listName + '=list', {
                     list: _list
                 });
             };
 
-            ScopeConfigWrapper.prototype.getSortList = function() {
+            ScopeConfigWrapper.prototype.getSortList = function () {
                 return this.jdConfig.sortList;
             };
 
-            ScopeConfigWrapper.prototype.setSortList = function(sortList) {
+            ScopeConfigWrapper.prototype.setSortList = function (sortList) {
                 return this.jdConfig.sortList = sortList; // jshint ignore:line
             };
 
-            ScopeConfigWrapper.prototype.setPredicates = function(predicates) {
+            ScopeConfigWrapper.prototype.setPredicates = function (predicates) {
                 return this.jdConfig.predicates = predicates; // jshint ignore:line
             };
 
-            ScopeConfigWrapper.prototype.getPredicates = function() {
+            ScopeConfigWrapper.prototype.getPredicates = function () {
                 return this.jdConfig.predicates;
             };
 
-            ScopeConfigWrapper.prototype.callChangeEvent = function(page, itemsPerPage, sortList, success) {
+            ScopeConfigWrapper.prototype.callChangeEvent = function (page, itemsPerPage, sortList, success) {
                 var $this = this;
                 var deferred = this.$q.defer();
-                deferred.promise.then(function(list) {
+                deferred.promise.then(function (list) {
                     // atribui página atual para atribuir ao scope
                     // sempre que lista for atualizada por evento de paginação ou ordenação o update será chamado,
                     // caso o objeto tenha o atributo pageNo esta página será atribuída ao currentPage, caso contrário será considerado como página 0,
@@ -312,46 +318,46 @@
                 }, deferred);
             };
 
-            ScopeConfigWrapper.prototype.getItemsPerPage = function() {
+            ScopeConfigWrapper.prototype.getItemsPerPage = function () {
                 return this.jdConfig.itemsPerPage;
             };
 
-            ScopeConfigWrapper.prototype.getCurrentPage = function() {
+            ScopeConfigWrapper.prototype.getCurrentPage = function () {
                 return this.jdConfig.currentPage;
             };
 
-            ScopeConfigWrapper.prototype.getSortContext = function() {
+            ScopeConfigWrapper.prototype.getSortContext = function () {
                 return this.jdConfig.sortContext;
             };
 
-            ScopeConfigWrapper.prototype.setCurrentPage = function(currentPage) {
+            ScopeConfigWrapper.prototype.setCurrentPage = function (currentPage) {
                 return this.jdConfig.currentPage = currentPage; // jshint ignore:line
             };
 
-            ScopeConfigWrapper.prototype.getOrderBy = function() {
+            ScopeConfigWrapper.prototype.getOrderBy = function () {
                 return this.jdConfig.orderBy;
             };
 
-            ScopeConfigWrapper.prototype.getOrderBy = function() {
+            ScopeConfigWrapper.prototype.getOrderBy = function () {
                 return this.jdConfig.orderBy;
             };
 
-            ScopeConfigWrapper.prototype.getNumberOfPages = function() {
+            ScopeConfigWrapper.prototype.getNumberOfPages = function () {
                 return this.jdConfig.numberOfPages;
             };
 
-            ScopeConfigWrapper.prototype.setNumberOfPages = function(numberOfPages) {
+            ScopeConfigWrapper.prototype.setNumberOfPages = function (numberOfPages) {
                 return this.jdConfig.numberOfPages = numberOfPages; // jshint ignore:line 
             };
 
-            ScopeConfigWrapper.prototype.getNumberOfPagesToShow = function() {
+            ScopeConfigWrapper.prototype.getNumberOfPagesToShow = function () {
                 return this.jdConfig.numberOfPagesToShow;
             };
 
-            ScopeConfigWrapper.prototype.keepItemSelected = function() {
+            ScopeConfigWrapper.prototype.keepItemSelected = function () {
                 var selectedItem = this.jdConfig ? this.jdConfig.selectedItem : undefined;
                 if (selectedItem) {
-                    angular.forEach(this.getList(), function(item) {
+                    angular.forEach(this.getList(), function (item) {
                         //ToDo: Alterar condição para comparar todos os atributos do selectedItem.
                         if (item.id && selectedItem.id && item.id == selectedItem.id) { // jshint ignore:line
                             selectedItem = item;
@@ -361,13 +367,13 @@
                 }
             };
 
-            ScopeConfigWrapper.prototype.saveCheckedItems = function() {
+            ScopeConfigWrapper.prototype.saveCheckedItems = function () {
                 var $this = this;
                 var currentPage = this.getList();
                 var filter = this.jdConfig.checkedFilter();
                 var key = this.jdConfig.checkedKey();
 
-                angular.forEach(currentPage, function(pageItem) {
+                angular.forEach(currentPage, function (pageItem) {
                     var checkedItemIndex = _.findIndex($this.checkedItemsList, function isInCheckedList(checkedItem) {
                         return checkedItem[key] === pageItem[key];
                     });
@@ -381,12 +387,12 @@
                 $this.checkedItemsList = _.union($this.checkedItemsList, checkedItems);
             };
 
-            ScopeConfigWrapper.prototype.applyCheckedItems = function() {
+            ScopeConfigWrapper.prototype.applyCheckedItems = function () {
                 var $this = this;
                 var currentPage = this.getList();
                 var key = this.jdConfig.checkedKey();
 
-                angular.forEach(currentPage, function(pageItem) {
+                angular.forEach(currentPage, function (pageItem) {
                     var checkedItem = _.find($this.checkedItemsList, function isInCheckedList(checkedItem) {
                         return checkedItem[key] === pageItem[key];
                     });
@@ -398,7 +404,7 @@
                         //Returns all the properties that the checkedItem has and the pageItem hasn't.
                         var differences = _.difference(checkedProperties, pageItemProperties);
 
-                        angular.forEach(differences, function(diff) {
+                        angular.forEach(differences, function (diff) {
                             pageItem[diff] = checkedItem[diff];
                         });
                     }
@@ -409,7 +415,7 @@
 
         })();
 
-        TableConfiguration = (function() {
+        TableConfiguration = (function () {
             function TableConfiguration(tableElement, attributes, TableConfig) {
                 this.tableElement = tableElement;
                 this.attributes = attributes;
@@ -421,7 +427,7 @@
                 this.createColumnConfigurations();
             }
 
-            TableConfiguration.prototype.capitaliseFirstLetter = function(string) {
+            TableConfiguration.prototype.capitaliseFirstLetter = function (string) {
                 if (string) {
                     return string.charAt(0).toUpperCase() + string.slice(1);
                 } else {
@@ -429,7 +435,7 @@
                 }
             };
 
-            TableConfiguration.prototype.extractWidth = function(prop) {
+            TableConfiguration.prototype.extractWidth = function (prop) {
                 var width;
                 width = /([0-9]+px)/i.exec(prop);
                 if (width) {
@@ -439,7 +445,7 @@
                 }
             };
 
-            TableConfiguration.prototype.isSortable = function(classes) {
+            TableConfiguration.prototype.isSortable = function (classes) {
                 var sortable;
                 sortable = /(sortable)/i.exec(classes);
                 if (sortable) {
@@ -449,7 +455,7 @@
                 }
             };
 
-            TableConfiguration.prototype.getInitialSorting = function(td) {
+            TableConfiguration.prototype.getInitialSorting = function (td) {
                 var initialSorting;
                 initialSorting = td.attr("jd-initial-sorting");
                 if (initialSorting) {
@@ -461,7 +467,7 @@
                 return void 0;
             };
 
-            TableConfiguration.prototype.collectHeaderMarkup = function(table) {
+            TableConfiguration.prototype.collectHeaderMarkup = function (table) {
                 var customHeaderMarkups, th, tr, thead, _i, _len, _ref;
                 customHeaderMarkups = {};
                 tr = table.find("tr");
@@ -482,7 +488,7 @@
                 return customHeaderMarkups;
             };
 
-            TableConfiguration.prototype.collectBodyMarkup = function(table) {
+            TableConfiguration.prototype.collectBodyMarkup = function (table) {
                 var attribute, bodyDefinition, initialSorting, sortable, td, title, width, _i, _len, _ref;
                 bodyDefinition = [];
                 _ref = table.find("td");
@@ -508,7 +514,7 @@
                 return bodyDefinition;
             };
 
-            TableConfiguration.prototype.createColumnConfigurations = function() {
+            TableConfiguration.prototype.createColumnConfigurations = function () {
                 var bodyMarkup, headerMarkup, i, _i, _len;
                 headerMarkup = this.collectHeaderMarkup(this.tableElement);
                 bodyMarkup = this.collectBodyMarkup(this.tableElement);
@@ -523,10 +529,10 @@
 
         })();
 
-        Setup = (function() {
-            function Setup() {}
+        Setup = (function () {
+            function Setup() { }
 
-            Setup.prototype.setupTr = function(element, repeatString) {
+            Setup.prototype.setupTr = function (element, repeatString) {
                 var tbody, tr;
                 tbody = element.find("tbody");
                 tr = tbody.find("tr");
@@ -536,12 +542,12 @@
             return Setup;
         })();
 
-        PaginatedSetup = (function(_super) {
+        PaginatedSetup = (function (_super) {
             __extends(PaginatedSetup, _super);
 
-            function PaginatedSetup() {} // jshint ignore:line
+            function PaginatedSetup() { } // jshint ignore:line
 
-            PaginatedSetup.prototype.compile = function(element) {
+            PaginatedSetup.prototype.compile = function (element) {
                 var trackBy = element.attr('track-by') || '';
                 if (trackBy && trackBy.trim() !== '') {
                     if (trackBy.trim().indexOf('$') < 0 && trackBy.trim().indexOf('item.') < 0) {
@@ -553,14 +559,14 @@
                 }
             };
 
-            PaginatedSetup.prototype.link = function($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig) {
+            PaginatedSetup.prototype.link = function ($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig) {
 
                 var getSortedAndPaginatedList, update, w, keepInBounds, updateCheckAll;
                 var allCheckedStatus = false;
 
                 w = new ScopeConfigWrapper($scope, $attributes.jdTable, $attributes.jdPaginated, $attributes.jdPagesToShow, $q, $rootScope, $filter, TableConfig);
 
-                getSortedAndPaginatedList = function(list, currentPage, itemsPerPage, orderBy, sortContext, predicate, $filter) {
+                getSortedAndPaginatedList = function (list, currentPage, itemsPerPage, orderBy, sortContext, predicate, $filter) {
                     var fromPage, val;
                     if (list) {
                         val = list;
@@ -592,13 +598,13 @@
                 };
 
                 // inicio paginação
-                keepInBounds = function(val, min, max) {
+                keepInBounds = function (val, min, max) {
                     val = Math.max(min, val);
                     return Math.min(max, val);
                 };
                 // fim paginação
 
-                update = function() {
+                update = function () {
                     if (w.getList()) {
                         // trecho que prepara a lista filtrada e ordenada
                         if ($scope.jdConfig.changeEvent) {
@@ -639,7 +645,7 @@
                     $rootScope.$broadcast('Jedi-Table.TableUpdated', w.jdConfig);
                 };
 
-                updateCheckAll = function() {
+                updateCheckAll = function () {
                     if ($scope.hasCheck && typeof w.jdConfig.onAllChecked === 'function') {
                         var currentPage = w.getList();
                         if (!currentPage || currentPage.length === 0) {
@@ -661,21 +667,21 @@
                     }
                 };
 
-                $scope.isInitialized = function() {
+                $scope.isInitialized = function () {
                     return !angular.isUndefined(w.getList()) && !angular.isUndefined(w.getTotalCount());
                 };
-                $scope.isEmpty = function() {
+                $scope.isEmpty = function () {
                     return $scope.isInitialized() && w.getTotalCount() < 1;
                 };
-                $scope.getNumberOfPages = function() {
+                $scope.getNumberOfPages = function () {
                     return w.getNumberOfPages();
                 };
-                $scope.getCurrentPage = function() {
+                $scope.getCurrentPage = function () {
                     return w.getCurrentPage();
                 };
 
                 // inicio eventos
-                $scope.sort = function(predicate) {
+                $scope.sort = function (predicate) {
                     if (!w.getSortList()) {
                         return;
                     }
@@ -683,7 +689,7 @@
                     var _sortList = [];
                     _sortList = _sortList.concat(w.getSortList());
 
-                    var result = _.find(_sortList, function(e) {
+                    var result = _.find(_sortList, function (e) {
                         return e.predicate === predicate;
                     });
 
@@ -702,7 +708,7 @@
                     }
 
                     var _predicates = [];
-                    angular.forEach(_sortList, function(item) {
+                    angular.forEach(_sortList, function (item) {
                         if (item.descending) {
                             _predicates.push('-' + item.predicate); //Descresente
                         } else {
@@ -719,7 +725,7 @@
                             w.saveCheckedItems();
                         }
 
-                        w.callChangeEvent(w.getCurrentPage(), w.getItemsPerPage(), _predicates, function(list) {
+                        w.callChangeEvent(w.getCurrentPage(), w.getItemsPerPage(), _predicates, function (list) {
                             w.setSortList(_sortList);
                             w.setPredicates(_predicates);
                             w.setList(list);
@@ -741,14 +747,14 @@
                     }
                 };
 
-                $scope.stepPage = function(page) {
+                $scope.stepPage = function (page) {
                     page = parseInt(page);
                     page = keepInBounds(w.getCurrentPage() + page, 0, w.getNumberOfPages() - 1);
                     if ($scope.jdConfig.changeEvent) {
                         if ($scope.hasCheck) {
                             w.saveCheckedItems();
                         }
-                        w.callChangeEvent(page, w.getItemsPerPage(), w.getPredicates(), function(list) {
+                        w.callChangeEvent(page, w.getItemsPerPage(), w.getPredicates(), function (list) {
                             $scope.pageSequence.realignGreedy(page);
                             w.setCurrentPage(page);
                             w.setList(list);
@@ -764,16 +770,16 @@
                     }
                 };
 
-                $scope.firstPage = function() {
+                $scope.firstPage = function () {
                     return $scope.stepPage(-1);
                 };
 
-                $scope.goToPage = function(page) {
+                $scope.goToPage = function (page) {
                     if ($scope.jdConfig.changeEvent) {
                         if ($scope.hasCheck) {
                             w.saveCheckedItems();
                         }
-                        w.callChangeEvent(page, w.getItemsPerPage(), w.getPredicates(), function(list) {
+                        w.callChangeEvent(page, w.getItemsPerPage(), w.getPredicates(), function (list) {
                             w.setCurrentPage(page);
                             w.setList(list);
                             w.keepItemSelected();
@@ -791,17 +797,17 @@
                 $scope.pageSequence = new PageSequence();
 
                 if (!$scope.jdConfig.changeEvent) {
-                    $scope.$watch('jdConfig.currentPage', function(newValue, oldValue) {
+                    $scope.$watch('jdConfig.currentPage', function (newValue, oldValue) {
                         if (newValue !== oldValue) {
                             return update();
                         }
                     });
                 }
 
-                $scope.$watch('jdConfig.itemsPerPage', function(newValue, oldValue) {
+                $scope.$watch('jdConfig.itemsPerPage', function (newValue, oldValue) {
                     if (newValue !== oldValue) {
                         if ($scope.jdConfig.changeEvent) {
-                            w.callChangeEvent(w.getCurrentPage(), newValue, w.getPredicates(), function(list) {
+                            w.callChangeEvent(w.getCurrentPage(), newValue, w.getPredicates(), function (list) {
                                 w.setItemsPerPage(newValue);
                                 w.setList(list);
                                 w.keepItemSelected();
@@ -813,7 +819,7 @@
                 });
 
                 if (!$scope.jdConfig.changeEvent) {
-                    $scope.$watch('jdConfig.sortContext', function(newValue, oldValue) {
+                    $scope.$watch('jdConfig.sortContext', function (newValue, oldValue) {
                         if (newValue !== oldValue) {
                             return update();
                         }
@@ -822,7 +828,7 @@
 
                 // If data is in memory, listen to the changes and update the table.
                 if ($scope.isMemory) {
-                    $scope.$watchCollection($attributes.jdTable, function(newValue, oldValue) {
+                    $scope.$watchCollection($attributes.jdTable, function (newValue, oldValue) {
                         if (newValue !== oldValue) {
                             update();
                         }
@@ -832,7 +838,7 @@
                     // table changing completely (as in reloading the table, or changing page) from smaller changes (e.g.: an item being checked)
                     // The first will easily fall on the watchCollection, and the second below. In the second case we don't want to 
                     // trigger the update function, but you may need the event broadcasted
-                    $scope.$watch($attributes.jdTable, function(newValue, oldValue) {
+                    $scope.$watch($attributes.jdTable, function (newValue, oldValue) {
                         if (newValue !== oldValue) {
                             $rootScope.$broadcast('Jedi-Table.ListChanged', w.jdConfig);
                         }
@@ -840,7 +846,7 @@
                 }
 
                 if (!$scope.isMemory) {
-                    $scope.$watch('listData', function(newValue, oldValue) {
+                    $scope.$watch('listData', function (newValue, oldValue) {
                         if (newValue !== oldValue) {
                             update();
                         }
@@ -849,8 +855,8 @@
                     // If attr 'jd-load-on-startup' or jdConfig.loadOnStartup are defined
                     // Invoke changeEvent func to load first page
                     if ($scope.jdConfig.loadOnStartup || angular.isDefined($attributes.jdLoadOnStartup)) {
-                        setTimeout(function() {
-                            w.callChangeEvent(0, w.getItemsPerPage(), undefined, function(list) {
+                        setTimeout(function () {
+                            w.callChangeEvent(0, w.getItemsPerPage(), undefined, function (list) {
                                 w.setList(list);
                                 w.keepItemSelected();
                             });
@@ -865,14 +871,14 @@
 
         })(Setup);
 
-        Table = (function() {
+        Table = (function () {
             function Table(element, tableConfiguration, TableConfig) {
                 this.element = element;
                 this.tableConfiguration = tableConfiguration;
                 this.TableConfig = TableConfig;
             }
 
-            Table.prototype.constructHeader = function() {
+            Table.prototype.constructHeader = function () {
                 var i, tr, _i, _len, _ref;
                 tr = this.element.find("thead > tr");
                 if (tr.length === 0) {
@@ -886,7 +892,7 @@
                 return tr;
             };
 
-            Table.prototype.setupHeader = function() {
+            Table.prototype.setupHeader = function () {
                 var header, thead;
                 thead = this.element.find("thead");
                 if (thead.length === 0) {
@@ -905,7 +911,7 @@
                 return thead.append(header);
             };
 
-            Table.prototype.setupFooter = function() {
+            Table.prototype.setupFooter = function () {
                 var tfoot = this.element.find('tfoot');
                 if (tfoot.length === 0) {
                     tfoot = $('<tfoot></tfoot>');
@@ -941,18 +947,18 @@
                 }
             };
 
-            Table.prototype.getSetup = function() {
+            Table.prototype.getSetup = function () {
                 return new PaginatedSetup();
             };
 
-            Table.prototype.compile = function() {
+            Table.prototype.compile = function () {
                 this.setupHeader();
                 this.setupFooter();
                 this.setup = this.getSetup();
                 return this.setup.compile(this.element);
             };
 
-            Table.prototype.setupInitialSorting = function($scope) {
+            Table.prototype.setupInitialSorting = function ($scope) {
                 var bd, _i, _len, _ref, _results;
                 _ref = this.tableConfiguration.columnConfigurations;
                 _results = [];
@@ -971,12 +977,12 @@
                 return _results;
             };
 
-            Table.prototype.post = function($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig) {
+            Table.prototype.post = function ($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig) {
                 if (!$scope.getSortIcon) {
-                    $scope.getSortIcon = function(predicate) {
+                    $scope.getSortIcon = function (predicate) {
                         var result;
                         if ($scope.jdConfig.sortList && $scope.jdConfig.sortList.length > 0) {
-                            result = _.find($scope.jdConfig.sortList, function(e) {
+                            result = _.find($scope.jdConfig.sortList, function (e) {
                                 return e.predicate === predicate;
                             });
                         }
@@ -984,11 +990,11 @@
                         if (!result) {
                             return "glyphicon glyphicon-minus";
                         } else
-                        if (result.descending) {
-                            return "glyphicon glyphicon-chevron-down";
-                        } else {
-                            return "glyphicon glyphicon-chevron-up";
-                        }
+                            if (result.descending) {
+                                return "glyphicon glyphicon-chevron-down";
+                            } else {
+                                return "glyphicon glyphicon-chevron-up";
+                            }
                     };
                 }
 
@@ -1004,7 +1010,7 @@
 
         })();
 
-        PageSequence = (function() {
+        PageSequence = (function () {
             function PageSequence(lowerBound, upperBound, start, length) {
                 this.lowerBound = lowerBound != null ? lowerBound : 0; // jshint ignore:line
                 this.upperBound = upperBound != null ? upperBound : 1; // jshint ignore:line
@@ -1018,7 +1024,7 @@
                 this.data = this.generate(start);
             }
 
-            PageSequence.prototype.generate = function(start) {
+            PageSequence.prototype.generate = function (start) {
                 var x, _i, _ref, _results;
                 if (start > (this.upperBound - this.length)) {
                     start = this.upperBound - this.length;
@@ -1032,7 +1038,7 @@
                 return _results;
             };
 
-            PageSequence.prototype.resetParameters = function(lowerBound, upperBound, length) {
+            PageSequence.prototype.resetParameters = function (lowerBound, upperBound, length) {
                 this.lowerBound = lowerBound;
                 this.upperBound = upperBound;
                 this.length = length;
@@ -1042,13 +1048,13 @@
                 return this.data = this.generate(this.data[0]); // jshint ignore:line
             };
 
-            PageSequence.prototype.relocate = function(distance) {
+            PageSequence.prototype.relocate = function (distance) {
                 var newStart;
                 newStart = this.data[0] + distance;
                 return this.data = this.generate(newStart, newStart + this.length); // jshint ignore:line
             };
 
-            PageSequence.prototype.realignGreedy = function(page) {
+            PageSequence.prototype.realignGreedy = function (page) {
                 var newStart;
 
                 //Se a página que está sendo navegada não existe na lista de páginas exibidas, atualizo as páginas a serem exibidas.
@@ -1058,16 +1064,16 @@
                 }
             };
 
-            PageSequence.prototype.realignGenerous = function(page) {};
+            PageSequence.prototype.realignGenerous = function (page) { };
 
             return PageSequence;
 
         })();
-        angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', 'jedi.table.TableConfig', function($filter, $q, $rootScope, $compile, TableConfig) {
+        angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', 'jedi.table.TableConfig', function ($filter, $q, $rootScope, $compile, TableConfig) {
             return {
                 restrict: "AC",
                 scope: true,
-                compile: function(element, attributes) {
+                compile: function (element, attributes) {
                     var table, tc;
 
                     var trElement = angular.element(element.find('tbody').find('tr'));
@@ -1084,10 +1090,10 @@
                     table = new Table(element, tc, TableConfig);
                     table.compile();
                     return {
-                        post: function($scope, $element, $attributes) {
+                        post: function ($scope, $element, $attributes) {
                             table.post($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig);
 
-                            $scope.markSelected = function(item) {
+                            $scope.markSelected = function (item) {
                                 if (this.jdConfig.selectedItem !== item) {
                                     this.jdConfig.selectedItem = item;
                                     return;
@@ -1120,12 +1126,12 @@
 
                                 //// destroy
                                 //// se escopo destruido remove elementos
-                                $scope.$on('$destroy', function() {
+                                $scope.$on('$destroy', function () {
                                     destroy();
                                 });
 
                                 //// se a table for destruida remove demais elementos
-                                $element.on('$destroy', function() {
+                                $element.on('$destroy', function () {
                                     destroy();
                                 });
                             }
@@ -1135,10 +1141,10 @@
             };
         }]);
 
-        angular.module("jedi.table").directive("jdAttribute", [function() {
+        angular.module("jedi.table").directive("jdAttribute", [function () {
             return {
                 restrict: "A",
-                compile: function(element, attributes) {
+                compile: function (element, attributes) {
                     var attribute;
                     attribute = element.attr("jd-attribute");
                     if (!attribute) {
@@ -1154,6 +1160,6 @@
                 }
             };
         }]);
-	}); //end define[]
+    })); //end define[]
 
 }).call(this);
