@@ -1,3 +1,3 @@
-	}); //end define[]
+	})); //end define function
 
 }).call(this);

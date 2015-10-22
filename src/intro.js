@@ -9,7 +9,13 @@
 (function() {
     'use strict';
 
-    define(['angular', 'jquery', 'lodash'], function () {
+    (function (factory) {
+        if (typeof define === 'function' && define.amd) {
+            define(['angular', 'jquery', 'lodash'], factory); // AMD
+        } else {
+            factory(); // node or other global
+        }
+    }(function () {
         var ColumnConfiguration, PageSequence, PaginatedSetup, ScopeConfigWrapper, Setup, Table, TableConfiguration, emptyTableDefaultTemplate, paginationTemplate, paginationTemplateScroll,
             __hasProp = {}.hasOwnProperty,
             __extends = function(child, parent) {
