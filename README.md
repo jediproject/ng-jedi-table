@@ -1,4 +1,4 @@
-# ng-jedi-table
+# [ng-jedi-table](https://github.com/jediproject/ng-jedi-table)
 A table for [AngularJs](https://angularjs.org/) with support for restful API standard.
 
 ##### [DEMO](http://jediproject.github.io/ng-jedi-table/)
