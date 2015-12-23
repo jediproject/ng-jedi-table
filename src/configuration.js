@@ -822,10 +822,11 @@
     })(Setup);
 
     Table = (function() {
-        function Table(element, tableConfiguration, TableConfig) {
+        function Table(element, tableConfiguration, TableConfig, $templateCache) {
             this.element = element;
             this.tableConfiguration = tableConfiguration;
             this.TableConfig = TableConfig;
+            this.$templateCache = $templateCache;
         }
 
         Table.prototype.constructHeader = function() {
@@ -873,7 +874,7 @@
             if (this.TableConfig.emptyTableTemplate) {
                 emptyTableTemp = this.TableConfig.emptyTableTemplate;
             } else {
-                emptyTableTemp = emptyTableDefaultTemplate;
+                emptyTableTemp = this.$templateCache.get(this.TableConfig.emptyTableDefaultTemplateUrl);
             }
 
             // In case there is a special i18n directive to use, we replace the default(i18n).
@@ -888,9 +889,9 @@
             if (this.tableConfiguration.paginated) {
                 //Se o attr jdScroll for false, não deve ser adicionado o scroll, logo a paginação fica normal.
                 if (this.element.attr("jd-scroll") === "false") {
-                    tfoot.append(paginationTemplate);
+                    tfoot.append(this.$templateCache.get(this.TableConfig.paginationTemplateUrl));
                 } else {
-                    var pagination = angular.element(paginationTemplateScroll);
+                    var pagination = angular.element(this.$templateCache.get(this.TableConfig.paginationTemplateScrollUrl));
                     pagination.addClass('scrolled-pagination');
                     tfoot.append(pagination);
                 }
@@ -1019,3 +1020,4 @@
         return PageSequence;
 
     })();
+    

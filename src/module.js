@@ -1,4 +1,4 @@
-    angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', 'jedi.table.TableConfig', function($filter, $q, $rootScope, $compile, TableConfig) {
+angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', '$templateCache', 'jedi.table.TableConfig', function($filter, $q, $rootScope, $compile, $templateCache, TableConfig) {
         return {
             restrict: "AC",
             scope: true,
@@ -16,7 +16,7 @@
                 trElement.attr('ng-class', "{'table-selected-row' : item == jdConfig.selectedItem}");
 
                 tc = new TableConfiguration(element, attributes, TableConfig);
-                table = new Table(element, tc, TableConfig);
+                table = new Table(element, tc, TableConfig, $templateCache);
                 table.compile();
                 return {
                     post: function($scope, $element, $attributes) {

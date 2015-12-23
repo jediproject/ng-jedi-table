@@ -12,7 +12,7 @@
         return factory();
     }
 }(function() {
-    var ColumnConfiguration, PageSequence, PaginatedSetup, ScopeConfigWrapper, Setup, Table, TableConfiguration, emptyTableDefaultTemplate, paginationTemplate, paginationTemplateScroll,
+    var ColumnConfiguration, PageSequence, PaginatedSetup, ScopeConfigWrapper, Setup, Table, TableConfiguration,
         __hasProp = {}.hasOwnProperty,
         __extends = function(child, parent) {
             for (var key in parent) {
@@ -28,17 +28,41 @@
             child.prototype = new ctor();
             child.__super__ = parent.prototype;
             return child;
-        };
-
-    emptyTableDefaultTemplate = '<tr ng-show="isEmpty()"><td colspan="100%"><strong class="text-warning"><i18n>No item found.</i18n></strong></td></tr>';
-    paginationTemplateScroll = "<div ng-show='isInitialized() && !isEmpty() && getNumberOfPages() > 1' style='margin: 0px;margin-top:10px;'><ul class='pagination'><li ng-class='{disabled: getCurrentPage() <= 0}'><a href='' ng-click='firstPage()'>&lsaquo;</a></li><li ng-if='pageSequence.data[0] > 0'><a href='' ng-click='stepPage(-jdConfig.numberOfPages)'>1</a></li><li ng-if='pageSequence.data[0] > 0'><a href='' ng-click='stepPage(-(pageSequence.data.indexOf(getCurrentPage()) + jdConfig.numberOfPagesToShow))'>&hellip;</a></li><li ng-class='{active: getCurrentPage() == page}' ng-repeat='page in pageSequence.data'><a href='' ng-click='goToPage(page)'>{{page + 1}}</a></li><li ng-if='pageSequence.data[pageSequence.data.length -1] < getNumberOfPages() - 1'><a href='' ng-click='stepPage(jdConfig.numberOfPagesToShow - pageSequence.data.indexOf(getCurrentPage()))'>&hellip;</a></li><li ng-if='pageSequence.data[pageSequence.data.length -1] < getNumberOfPages() - 1'><a href='' ng-click='stepPage(getNumberOfPages())'>{{getNumberOfPages()}}</a></li><li ng-class='{disabled: getCurrentPage() >= getNumberOfPages() - 1}'><a href='' ng-click='stepPage(1)'>&rsaquo;</a></li></ul></div>";
-    paginationTemplate = "<tr ng-show='isInitialized() && !isEmpty() && getNumberOfPages() > 1' class='jd-pagination'><td colspan='100%'>" + paginationTemplateScroll + "</td></tr>";
+        };             
 
     angular.module("jedi.table", []).constant('jedi.table.TableConfig', {
         i18nDirective: '',
         defaultPageSize: 10,
-        emptyTableTemplate: ''
-    });
+        emptyTableTemplate: '',
+        emptyTableDefaultTemplateUrl: 'assets/libs/ng-jedi-table/emptyTableDefaultTemplate.html',
+        paginationTemplateScrollUrl: 'assets/libs/ng-jedi-table/paginationTemplateScroll.html',
+        paginationTemplateUrl: 'assets/libs/ng-jedi-table/paginationTemplate.html'
+    }).run(['$templateCache', function($templateCache){
+        $templateCache.put('assets/libs/ng-jedi-table/emptyTableDefaultTemplate.html', '<tr ng-show="isEmpty()">' +
+                                                                                       '    <td colspan="100%">' +
+                                                                                       '        <strong class="text-warning"><i18n>No item found.</i18n></strong>' +
+                                                                                       '    </td>' +
+                                                                                       '</tr>');
+                                                                                       
+        $templateCache.put('assets/libs/ng-jedi-table/paginationTemplateScroll.html', '<div ng-show="isInitialized() && !isEmpty() && getNumberOfPages() > 1" style="margin: 0px;margin-top:10px;">' +
+                                                                                      '    <ul class="pagination">' +
+                                                                                      '        <li ng-class="{disabled: getCurrentPage() <= 0}"><a href="" ng-click="firstPage()">&lsaquo;</a></li>' +
+                                                                                      '        <li ng-if="pageSequence.data[0] > 0"><a href="" ng-click="stepPage(-jdConfig.numberOfPages)">1</a></li>' +
+                                                                                      '        <li ng-if="pageSequence.data[0] > 0"><a href="" ng-click="stepPage(-(pageSequence.data.indexOf(getCurrentPage()) + jdConfig.numberOfPagesToShow))">&hellip;</a></li>' +
+                                                                                      '        <li ng-class="{active: getCurrentPage() == page}" ng-repeat="page in pageSequence.data"><a href="" ng-click="goToPage(page)">{{page + 1}}</a></li>' +
+                                                                                      '        <li ng-if="pageSequence.data[pageSequence.data.length -1] < getNumberOfPages() - 1"><a href="" ng-click="stepPage(jdConfig.numberOfPagesToShow - pageSequence.data.indexOf(getCurrentPage()))">&hellip;</a></li>' +
+                                                                                      '        <li ng-if="pageSequence.data[pageSequence.data.length -1] < getNumberOfPages() - 1"><a href="" ng-click="stepPage(getNumberOfPages())">{{getNumberOfPages()}}</a></li>' +
+                                                                                      '        <li ng-class="{disabled: getCurrentPage() >= getNumberOfPages() - 1}"><a href="" ng-click="stepPage(1)">&rsaquo;</a></li>' +
+                                                                                      '    </ul>' +
+                                                                                      '</div>');
+                                                                                    
+        $templateCache.put('assets/libs/ng-jedi-table/paginationTemplate.html', '<tr ng-show="isInitialized() && !isEmpty() && getNumberOfPages() > 1" class="jd-pagination">' +
+                                                                                '    <td colspan="100%">' + $templateCache.get('assets/libs/ng-jedi-table/paginationTemplateScroll.html') + '</td>' +
+                                                                                '</tr>');
+                                                                                       
+                                                                                       
+    }]);
+    
     ColumnConfiguration = (function() {
         function ColumnConfiguration(bodyMarkup, headerMarkup, TableConfig) {
             this.attribute = bodyMarkup.attribute;
@@ -863,10 +887,11 @@
     })(Setup);
 
     Table = (function() {
-        function Table(element, tableConfiguration, TableConfig) {
+        function Table(element, tableConfiguration, TableConfig, $templateCache) {
             this.element = element;
             this.tableConfiguration = tableConfiguration;
             this.TableConfig = TableConfig;
+            this.$templateCache = $templateCache;
         }
 
         Table.prototype.constructHeader = function() {
@@ -914,7 +939,7 @@
             if (this.TableConfig.emptyTableTemplate) {
                 emptyTableTemp = this.TableConfig.emptyTableTemplate;
             } else {
-                emptyTableTemp = emptyTableDefaultTemplate;
+                emptyTableTemp = this.$templateCache.get(this.TableConfig.emptyTableDefaultTemplateUrl);
             }
 
             // In case there is a special i18n directive to use, we replace the default(i18n).
@@ -929,9 +954,9 @@
             if (this.tableConfiguration.paginated) {
                 //Se o attr jdScroll for false, não deve ser adicionado o scroll, logo a paginação fica normal.
                 if (this.element.attr("jd-scroll") === "false") {
-                    tfoot.append(paginationTemplate);
+                    tfoot.append(this.$templateCache.get(this.TableConfig.paginationTemplateUrl));
                 } else {
-                    var pagination = angular.element(paginationTemplateScroll);
+                    var pagination = angular.element(this.$templateCache.get(this.TableConfig.paginationTemplateScrollUrl));
                     pagination.addClass('scrolled-pagination');
                     tfoot.append(pagination);
                 }
@@ -1060,7 +1085,8 @@
         return PageSequence;
 
     })();
-    angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', 'jedi.table.TableConfig', function($filter, $q, $rootScope, $compile, TableConfig) {
+    
+angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', '$templateCache', 'jedi.table.TableConfig', function($filter, $q, $rootScope, $compile, $templateCache, TableConfig) {
         return {
             restrict: "AC",
             scope: true,
@@ -1078,7 +1104,7 @@
                 trElement.attr('ng-class', "{'table-selected-row' : item == jdConfig.selectedItem}");
 
                 tc = new TableConfiguration(element, attributes, TableConfig);
-                table = new Table(element, tc, TableConfig);
+                table = new Table(element, tc, TableConfig, $templateCache);
                 table.compile();
                 return {
                     post: function($scope, $element, $attributes) {
