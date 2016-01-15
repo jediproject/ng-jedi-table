@@ -19,8 +19,8 @@ A table for [AngularJs](https://angularjs.org/) with support for restful API sta
 * Or manually add the following files to your page:
 
     ```html
-    <link rel="stylesheet" href="../ng-jedi-table.css">
-    <script src='../ng-jedi-table.js'></script>
+    <link rel="stylesheet" href="../table.css">
+    <script src='../table.js'></script>
     ```
 
 * Include module dependency:
