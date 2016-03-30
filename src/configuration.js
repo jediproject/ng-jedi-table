@@ -40,12 +40,13 @@
             }
         };
 
-        ColumnConfiguration.prototype.renderSorting = function(element) {
+        ColumnConfiguration.prototype.renderSorting = function(element, uiTable) {
             var icon;
             if (this.sortable) {
                 element.attr("ng-click", "sort('" + this.attribute + "')");
+                element.addClass('sortable');
                 icon = angular.element("<i style='margin-left: 10px;'></i>");
-                icon.attr("ng-class", "getSortIcon('" + this.attribute + "')");
+                uiTable.prepareSortIcon(icon, this.attribute);
                 return element.append(icon);
             }
         };
@@ -54,12 +55,12 @@
             return element.attr("width", this.width);
         };
 
-        ColumnConfiguration.prototype.renderHtml = function() {
+        ColumnConfiguration.prototype.renderHtml = function(uiTable) {
             var th;
             th = this.createElement();
             this.renderTitle(th);
             this.renderAttributes(th);
-            this.renderSorting(th);
+            this.renderSorting(th, uiTable);
             this.renderWidth(th);
             return th;
         };
@@ -282,10 +283,6 @@
 
         ScopeConfigWrapper.prototype.setCurrentPage = function(currentPage) {
             return this.jdConfig.currentPage = currentPage; // jshint ignore:line
-        };
-
-        ScopeConfigWrapper.prototype.getOrderBy = function() {
-            return this.jdConfig.orderBy;
         };
 
         ScopeConfigWrapper.prototype.getOrderBy = function() {
@@ -822,11 +819,12 @@
     })(Setup);
 
     Table = (function() {
-        function Table(element, tableConfiguration, TableConfig, $templateCache) {
+        function Table(element, tableConfiguration, TableConfig, $templateCache, uiTable) {
             this.element = element;
             this.tableConfiguration = tableConfiguration;
             this.TableConfig = TableConfig;
             this.$templateCache = $templateCache;
+            this.uiTable = uiTable;
         }
 
         Table.prototype.constructHeader = function() {
@@ -838,7 +836,7 @@
             _ref = this.tableConfiguration.columnConfigurations;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 i = _ref[_i];
-                tr.append(i.renderHtml());
+                tr.append(i.renderHtml(this.uiTable));
             }
             return tr;
         };
@@ -853,10 +851,6 @@
 
             if (!thead.is('[jd-ignore-header]')) {
                 header = this.constructHeader();
-            }
-
-            if (!this.element.hasClass('table')) {
-                this.element.addClass("table table-bordered table-striped table-responsive table-hover");
             }
 
             return thead.append(header);
@@ -928,7 +922,7 @@
             return _results;
         };
 
-        Table.prototype.post = function($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig) {
+        Table.prototype.post = function($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig, uiTable) {
             if (!$scope.getSortIcon) {
                 $scope.getSortIcon = function(predicate) {
                     var result;
@@ -939,12 +933,12 @@
                     }
 
                     if (!result) {
-                        return "glyphicon glyphicon-minus";
+                        return uiTable.sortIcons.empty;
                     } else
                     if (result.descending) {
-                        return "glyphicon glyphicon-chevron-down";
+                        return uiTable.sortIcons.desc;
                     } else {
-                        return "glyphicon glyphicon-chevron-up";
+                        return uiTable.sortIcons.asc;
                     }
                 };
             }

@@ -1,4 +1,4 @@
-angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', '$templateCache', 'jedi.table.TableConfig', function($filter, $q, $rootScope, $compile, $templateCache, TableConfig) {
+angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope', '$compile', '$templateCache', 'jedi.table.TableConfig', 'jedi.layout.impl.Table', function($filter, $q, $rootScope, $compile, $templateCache, TableConfig, uiTable) {
         return {
             restrict: "AC",
             scope: true,
@@ -16,11 +16,11 @@ angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope'
                 trElement.attr('ng-class', "{'table-selected-row' : item == jdConfig.selectedItem}");
 
                 tc = new TableConfiguration(element, attributes, TableConfig);
-                table = new Table(element, tc, TableConfig, $templateCache);
+                table = new Table(element, tc, TableConfig, $templateCache, uiTable);
                 table.compile();
                 return {
                     post: function($scope, $element, $attributes) {
-                        table.post($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig);
+                        table.post($scope, $element, $attributes, $filter, $q, $rootScope, TableConfig, uiTable);
 
                         $scope.markSelected = function(item) {
                             if (this.jdConfig.selectedItem !== item) {
@@ -36,7 +36,7 @@ angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope'
                             $element.before(scroll);
                             scroll.append($element);
                             var pagination = $element.find('.scrolled-pagination');
-                            pagination.insertAfter(scroll).addClass('text-center');
+                            pagination.insertAfter(scroll).addClass('text-center center-align');
 
                             var destroy = function destroy() {
                                 var s = scroll;
@@ -63,6 +63,10 @@ angular.module("jedi.table").directive("jdTable", ["$filter", '$q', '$rootScope'
                             $element.on('$destroy', function() {
                                 destroy();
                             });
+                        }
+
+                        if (!$element.attr('class') || $element.attr('class') === 'ng-scope') {
+                            $element.addClass(uiTable.cssClass);
                         }
                     }
                 };
